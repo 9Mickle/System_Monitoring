@@ -55,7 +55,7 @@ public class CourseServiceImpl implements CourseService {
     @Override
     @Transactional
     public Course saveCourse(CourseDTO courseDTO) {
-        //todo ошибку для создания такого же имени в курсе.
+        //todo создать исключение уникального названия title.
         return courseRepository.save(CourseMapper.INSTANCE.toCourse(courseDTO));
     }
 
@@ -92,7 +92,7 @@ public class CourseServiceImpl implements CourseService {
             Course course = optCourse.get();
             Module module = moduleService.saveModule(moduleDTO);
             course.getModules().add(module);
-            return course;
+            return courseRepository.save(course);
         } else {
             throw new CourseNotFoundException("Course not found with id: " + courseId);
         }
