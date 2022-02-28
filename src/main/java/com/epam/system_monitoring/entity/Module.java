@@ -17,14 +17,14 @@ public class Module {
     private Long id;
     private String title;
     private String description;
-    private String color;
     private LocalTime time;
 
     @Enumerated(EnumType.STRING)
     private ModuleStatus moduleStatus;
 
-//    @ManyToOne
-//    private Course course;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "course_id")
+    private Course course;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "student_id")

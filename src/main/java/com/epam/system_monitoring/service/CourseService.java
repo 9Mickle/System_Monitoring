@@ -11,15 +11,15 @@ public interface CourseService {
 
     List<Course> getAllCourses();
 
-    Optional<Course> getCourseById(Long courseId);
+    Course getCourseById(Long courseId);
 
     Course getCourseByTitle(String title);
 
     Course saveCourse(CourseDTO courseDTO);
 
-    Course updateCourse(Course oldCourse, CourseDTO newCourseDTO);
+    Course updateCourse(String titleOldCourse, CourseDTO newCourseDTO);
 
-    void deleteCourse(Course course);
+    void deleteCourse(Long id);
 
     Course addNewModuleToCourse(Long courseId, ModuleDTO moduleDTO);
 }

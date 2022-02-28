@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Data
@@ -16,7 +17,10 @@ public class Mentor {
     private Long id;
     private String name;
     private String surname;
+    @Column(unique = true)
+    private String username;
 
-    //Что закрепить за ментором?
-//    private Student student;
+    //todo список студентов
+    @OneToMany
+    private List<Student> students;
 }

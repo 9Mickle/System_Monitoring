@@ -9,5 +9,5 @@ public interface ModuleService {
 
     Module saveModule(ModuleDTO moduleDTO);
 
-    void deleteModule(Module module);
+    void deleteModule(Long id);
 }

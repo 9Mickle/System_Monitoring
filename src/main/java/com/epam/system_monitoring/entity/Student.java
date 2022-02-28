@@ -18,6 +18,12 @@ public class Student {
 
     private String name;
     private String surname;
+    @Column(unique = true)
+    private String username;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "mentor_id")
+    private Mentor mentor;
 
     @OneToMany(
             cascade = {CascadeType.ALL},

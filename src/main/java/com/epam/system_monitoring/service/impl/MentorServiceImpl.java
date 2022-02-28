@@ -1,4 +1,4 @@
-package com.epam.system_monitoring.impl;
+package com.epam.system_monitoring.service.impl;
 
 import com.epam.system_monitoring.service.MentorService;
 import org.springframework.stereotype.Service;

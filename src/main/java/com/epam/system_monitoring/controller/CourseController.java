@@ -1,10 +1,11 @@
 package com.epam.system_monitoring.controller;
 
-import com.epam.system_monitoring.converter.ConvertCourse;
 import com.epam.system_monitoring.dto.CourseDTO;
 import com.epam.system_monitoring.dto.ModuleDTO;
 import com.epam.system_monitoring.entity.Course;
-import com.epam.system_monitoring.impl.CourseServiceImpl;
+import com.epam.system_monitoring.mappers.CourseMapper;
+import com.epam.system_monitoring.mappers.ModuleMapper;
+import com.epam.system_monitoring.service.impl.CourseServiceImpl;
 import com.epam.system_monitoring.validation.ResponseErrorValidation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -15,8 +16,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
+
+//todo swagger
 
 @RestController
 @RequestMapping("api/course")
@@ -26,15 +28,13 @@ public class CourseController {
 
     private final CourseServiceImpl courseService;
 
-    private final ConvertCourse convertCourse;
-
     private final ResponseErrorValidation validation;
 
     @GetMapping("/")
     public ResponseEntity<Object> getAllCourses() {
         List<CourseDTO> courseDTOList = courseService.getAllCourses()
                 .stream()
-                .map(convertCourse::courseToCourseDTO)
+                .map(CourseMapper.INSTANCE::toDTO)
                 .collect(Collectors.toList());
 
         return new ResponseEntity<>(courseDTOList, HttpStatus.OK);
@@ -42,39 +42,31 @@ public class CourseController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Object> getCourse(@PathVariable Long id) {
-        try {
-            Optional<Course> course = courseService.getCourseById(id);
-            if (course.isPresent()) {
-                CourseDTO courseDTO = convertCourse.courseToCourseDTO(course.get());
+        CourseDTO courseDTO = CourseMapper.INSTANCE.toDTO(courseService.getCourseById(id));
 
-                return new ResponseEntity<>(courseDTO, HttpStatus.OK);
-            } else {
-                return courseNotFoundResponse(id);
-            }
-        } catch (Exception e) {
-            return errorResponse();
-        }
+        return new ResponseEntity<>(courseDTO, HttpStatus.OK);
     }
 
     @GetMapping("/search/{title}")
     public ResponseEntity<Object> getCourseByTitle(@PathVariable String title) {
         Course course = courseService.getCourseByTitle(title);
-        CourseDTO courseDTO = convertCourse.courseToCourseDTO(course);
+        CourseDTO courseDTO = CourseMapper.INSTANCE.toDTO(course);
 
         return new ResponseEntity<>(courseDTO, HttpStatus.OK);
     }
 
     @GetMapping("/{courseId}/modules")
     public ResponseEntity<Object> getAllModulesInCourse(@PathVariable Long courseId) {
-        Course course = courseService.getCourseById(courseId).get();
+        Course course = courseService.getCourseById(courseId);
+        List<ModuleDTO> dtoList = course.getModules()
+                .stream()
+                .map(ModuleMapper.INSTANCE::toDTO)
+                .collect(Collectors.toList());
 
-        return new ResponseEntity<>(course.getModules(), HttpStatus.OK);
+        return new ResponseEntity<>(dtoList, HttpStatus.OK);
     }
 
 
-    /**
-     * Первый вид обработки исключений клиента.
-     */
     @PostMapping("/create")
     public ResponseEntity<Object> createCourse(@RequestBody @Valid CourseDTO courseDTO,
                                                BindingResult bindingResult) {
@@ -83,45 +75,46 @@ public class CourseController {
         if (!ObjectUtils.isEmpty(errors)) {
             return errors;
         }
+        CourseDTO createdCourseDTO = CourseMapper.INSTANCE.toDTO(courseService.saveCourse(courseDTO));
 
-        return new ResponseEntity<>(courseService.saveCourse(courseDTO), HttpStatus.CREATED);
+        return new ResponseEntity<>(createdCourseDTO, HttpStatus.CREATED);
     }
 
-    /**
-     * Второй вид обработки исключений клиента.
-     */
     @PostMapping("/{courseId}/modules/")
-    public ResponseEntity<Object> createModuleForCourse(@PathVariable Long courseId,
-                                                        @RequestBody @Valid ModuleDTO moduleDTO) {
-        try {
-            return new ResponseEntity<>(courseService.addNewModuleToCourse(courseId, moduleDTO),
-                    HttpStatus.CREATED);
-        } catch (Exception e) {
-            return errorResponse();
+    public ResponseEntity<Object> addNewModuleForCourse(@PathVariable Long courseId,
+                                                        @RequestBody @Valid ModuleDTO moduleDTO,
+                                                        BindingResult bindingResult) {
+
+        ResponseEntity<Object> errors = validation.mapValidationService(bindingResult);
+        if (!ObjectUtils.isEmpty(errors)) {
+            return errors;
         }
+
+        CourseDTO courseDTO = CourseMapper.INSTANCE
+                .toDTO(courseService.addNewModuleToCourse(courseId, moduleDTO));
+        return new ResponseEntity<>(courseDTO, HttpStatus.CREATED);
     }
 
-    @PostMapping("/update/{id}")
-    public ResponseEntity<Object> updateCourse(@PathVariable Long id,
-                                               @RequestBody @Valid CourseDTO courseDTO) {
-        Course oldCourse = courseService.getCourseById(id).get();
+    @PostMapping("/update/{titleOldCourse}")
+    public ResponseEntity<Object> updateCourse(@PathVariable String titleOldCourse,
+                                               @RequestBody @Valid CourseDTO courseDTO,
+                                               BindingResult bindingResult) {
 
-        return new ResponseEntity<>(courseService.updateCourse(oldCourse, courseDTO), HttpStatus.OK);
+        ResponseEntity<Object> errors = validation.mapValidationService(bindingResult);
+        if (!ObjectUtils.isEmpty(errors)) {
+            return errors;
+        }
+
+        CourseDTO updatedCourseDTO = CourseMapper.INSTANCE.
+                toDTO(courseService.updateCourse(titleOldCourse, courseDTO));
+
+        return new ResponseEntity<>(updatedCourseDTO, HttpStatus.OK);
     }
 
     @PostMapping("/delete/{id}")
     public ResponseEntity<Object> deleteCourse(@PathVariable Long id) {
-        Course course = courseService.getCourseById(id).get();
-        courseService.deleteCourse(course);
+        courseService.deleteCourse(id);
 
         return new ResponseEntity<>(String.format("Course with id: %d was deleted", id), HttpStatus.OK);
-    }
-
-    private ResponseEntity<Object> errorResponse() {
-        return new ResponseEntity<>("Something went wrong...", HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-
-    private ResponseEntity<Object> courseNotFoundResponse(Long id) {
-        return new ResponseEntity<>(String.format("Course not found with id: %d", id), HttpStatus.NOT_FOUND);
     }
 }
