@@ -5,7 +5,6 @@ import com.epam.system_monitoring.dto.ModuleDTO;
 import com.epam.system_monitoring.entity.Course;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface CourseService {
 
@@ -19,7 +18,7 @@ public interface CourseService {
 
     Course updateCourse(String titleOldCourse, CourseDTO newCourseDTO);
 
-    void deleteCourse(Long id);
+    String deleteCourse(Long id);
 
     Course addNewModuleToCourse(Long courseId, ModuleDTO moduleDTO);
 }

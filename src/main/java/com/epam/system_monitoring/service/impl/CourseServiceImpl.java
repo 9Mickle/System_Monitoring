@@ -6,9 +6,7 @@ import com.epam.system_monitoring.entity.Course;
 import com.epam.system_monitoring.entity.Module;
 import com.epam.system_monitoring.exception.CourseNotFoundException;
 import com.epam.system_monitoring.mappers.CourseMapper;
-import com.epam.system_monitoring.mappers.ModuleMapper;
 import com.epam.system_monitoring.repository.CourseRepository;
-import com.epam.system_monitoring.repository.ModuleRepository;
 import com.epam.system_monitoring.service.CourseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -75,10 +73,11 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     @Transactional
-    public void deleteCourse(Long id) {
+    public String deleteCourse(Long id) {
         Optional<Course> course = courseRepository.findById(id);
         if (course.isPresent()) {
             courseRepository.delete(course.get());
+            return String.format("Course with id: %d was deleted", id);
         } else {
             throw new CourseNotFoundException("Course not found with id: " + id);
         }
