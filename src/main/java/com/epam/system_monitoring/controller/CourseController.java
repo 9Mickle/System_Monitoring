@@ -1,5 +1,6 @@
 package com.epam.system_monitoring.controller;
 
+import com.epam.system_monitoring.annotation.CustomJsonRootName;
 import com.epam.system_monitoring.dto.CourseDTO;
 import com.epam.system_monitoring.dto.ModuleDTO;
 import com.epam.system_monitoring.entity.Course;
@@ -15,7 +16,9 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 //todo swagger
@@ -37,22 +40,31 @@ public class CourseController {
                 .map(CourseMapper.INSTANCE::toDTO)
                 .collect(Collectors.toList());
 
-        return new ResponseEntity<>(courseDTOList, HttpStatus.OK);
+        if (courseDTOList.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        Map<Object, Object> result = new HashMap<>();
+        result.put(CourseDTO.class.getAnnotation(CustomJsonRootName.class).plural(), courseDTOList);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Object> getCourse(@PathVariable Long id) {
         CourseDTO courseDTO = CourseMapper.INSTANCE.toDTO(courseService.getCourseById(id));
 
-        return new ResponseEntity<>(courseDTO, HttpStatus.OK);
+        Map<Object, Object> result = new HashMap<>();
+        result.put(CourseDTO.class.getAnnotation(CustomJsonRootName.class).singular(), courseDTO);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-    @GetMapping("/search/{title}")
+    @GetMapping("/title/{title}")
     public ResponseEntity<Object> getCourseByTitle(@PathVariable String title) {
         Course course = courseService.getCourseByTitle(title);
         CourseDTO courseDTO = CourseMapper.INSTANCE.toDTO(course);
 
-        return new ResponseEntity<>(courseDTO, HttpStatus.OK);
+        Map<Object, Object> result = new HashMap<>();
+        result.put(CourseDTO.class.getAnnotation(CustomJsonRootName.class).singular(), courseDTO);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @GetMapping("/{courseId}/modules")
@@ -63,7 +75,9 @@ public class CourseController {
                 .map(ModuleMapper.INSTANCE::toDTO)
                 .collect(Collectors.toList());
 
-        return new ResponseEntity<>(dtoList, HttpStatus.OK);
+        Map<Object, Object> result = new HashMap<>();
+        result.put(ModuleDTO.class.getAnnotation(CustomJsonRootName.class).plural(), dtoList);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
 
