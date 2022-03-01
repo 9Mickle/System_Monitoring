@@ -113,8 +113,7 @@ public class CourseController {
 
     @PostMapping("/delete/{id}")
     public ResponseEntity<Object> deleteCourse(@PathVariable Long id) {
-        courseService.deleteCourse(id);
 
-        return new ResponseEntity<>(String.format("Course with id: %d was deleted", id), HttpStatus.OK);
+        return new ResponseEntity<>(courseService.deleteCourse(id), HttpStatus.OK);
     }
 }

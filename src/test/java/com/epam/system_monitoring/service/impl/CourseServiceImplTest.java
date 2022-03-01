@@ -13,6 +13,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -21,10 +22,10 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+//@SpringBootTest
 @ExtendWith(MockitoExtension.class)
 class CourseServiceImplTest {
 
@@ -34,7 +35,9 @@ class CourseServiceImplTest {
     @Mock
     private ModuleRepository moduleRepository;
 
+    @InjectMocks
     private CourseServiceImpl courseService;
+    @InjectMocks
     private ModuleServiceImpl moduleService;
 
     @BeforeEach
@@ -45,44 +48,35 @@ class CourseServiceImplTest {
 
     @Test
     public void canGetAllCourses() {
-        CourseDTO courseDTO1 = new CourseDTO("Title1", List.of());
-        CourseDTO courseDTO2 = new CourseDTO("Title2", List.of());
-
-        List<Course> exist = List.of(CourseMapper.INSTANCE.toCourse(courseDTO1),
-                CourseMapper.INSTANCE.toCourse(courseDTO2));
+        Course course = new Course();
+        List<Course> exist = List.of(course);
 
         when(courseRepository.findAll()).thenReturn(exist);
-
         assertEquals(exist, courseService.getAllCourses());
-
         verify(courseRepository).findAll();
     }
 
     @Test
     public void canGetCourseById() {
         Long courseId = 1L;
-        CourseDTO courseDTO = new CourseDTO("Title", List.of());
-        Course course = CourseMapper.INSTANCE.toCourse(courseDTO);
+        Course course = new Course();
         Optional<Course> exist = Optional.of(course);
 
         when(courseRepository.findById(courseId)).thenReturn(exist);
-
         assertEquals(exist.get(), courseService.getCourseById(courseId));
-
         verify(courseRepository).findById(courseId);
     }
 
     @Test
     public void canGetCourseByTitle() {
         String title = "Course 1";
+
         CourseDTO courseDTO = new CourseDTO(title, List.of());
         Course course = CourseMapper.INSTANCE.toCourse(courseDTO);
         Optional<Course> exist = Optional.of(course);
 
         when(courseRepository.findByTitle(title)).thenReturn(exist);
-
         assertEquals(exist.get(), courseService.getCourseByTitle(title));
-
         verify(courseRepository).findByTitle(title);
     }
 
@@ -101,17 +95,12 @@ class CourseServiceImplTest {
      */
     @Test
     public void canSaveCourse() {
-        CourseDTO courseDTO = new CourseDTO("Course 1", List.of());
+        CourseDTO courseDTO = new CourseDTO();
         Course exist = CourseMapper.INSTANCE.toCourse(courseDTO);
-        courseService.saveCourse(courseDTO);
 
-        ArgumentCaptor<Course> courseArgumentCaptor = ArgumentCaptor.forClass(Course.class);
-
-        verify(courseRepository).save(courseArgumentCaptor.capture());
-
-        Course capturedCourse = courseArgumentCaptor.getValue();
-
-        assertEquals(exist, capturedCourse);
+        when(courseRepository.save(exist)).thenReturn(exist);
+        assertEquals(exist, courseService.saveCourse(courseDTO));
+        verify(courseRepository).save(exist);
     }
 
     /**
@@ -136,33 +125,31 @@ class CourseServiceImplTest {
         verify(courseRepository).save(updatedCourse);
     }
 
-    /**
-     * Как протестировать удаление?
-     */
+//    /**
+//     * Как протестировать удаление?
+//     */
 //    @Test
 //    public void canDeleteCourse() {
-//        when(courseRepository.findAll().size()).thenReturn(0);
+//        Course course = new Course();
+//        when(courseRepository.delete(course)).thenReturn();
 //
-//        Optional<Course> course = Optional.of(CourseMapper.INSTANCE.toCourse(courseDTO1));
-//
-//        when(courseRepository.delete()).thenReturn(listCourses);
 //    }
 
-    /**
-     * Получаю NullPointer на 93 строке в CourseServiceImpl.
-     */
+
     @Test
     public void canAddNewModuleInCourse() {
         Long courseId = 1L;
+
         CourseDTO courseDTO = new CourseDTO("Title", List.of());
+        //Конвертирую ДТО, чтобы избежать NullPointerException при .getModules();
         Optional<Course> course = Optional.of(CourseMapper.INSTANCE.toCourse(courseDTO));
 
         ModuleDTO moduleDTO = new ModuleDTO();
         Module module = ModuleMapper.INSTANCE.toModule(moduleDTO);
         course.get().getModules().add(module);
 
-        given(courseRepository.findById(courseId)).willReturn(course);
-        given(moduleRepository.save(module)).willReturn(module);
+        when(courseRepository.findById(courseId)).thenReturn(course);
+//        when(moduleRepository.save(module)).thenReturn(module);??
         when(courseRepository.save(course.get())).thenReturn(course.get());
         assertEquals(course.get(), courseService.addNewModuleToCourse(courseId, moduleDTO));
     }
