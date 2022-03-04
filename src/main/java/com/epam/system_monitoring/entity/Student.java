@@ -15,8 +15,9 @@ public class Student {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+    @Column
     private String name;
+    @Column
     private String surname;
     @Column(unique = true)
     private String username;
@@ -25,8 +26,12 @@ public class Student {
     @JoinColumn(name = "mentor_id")
     private Mentor mentor;
 
-    @OneToMany(
-            cascade = {CascadeType.ALL},
-            fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "assignee", cascade = CascadeType.ALL)
     private List<Module> modules;
+
+    @PreRemove
+    public void deleteStudent() {
+        this.setMentor(null);
+        this.getModules().forEach(module -> module.setAssignee(null));
+    }
 }

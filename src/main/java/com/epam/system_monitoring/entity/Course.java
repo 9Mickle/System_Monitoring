@@ -18,6 +18,11 @@ public class Course {
     @Column(unique = true)
     private String title;
 
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "course", cascade = CascadeType.ALL)
     private List<Module> modules;
+
+    @PreRemove
+    public void deleteCourse() {
+        this.getModules().forEach(module -> module.setCourse(null));
+    }
 }
