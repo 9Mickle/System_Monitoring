@@ -1,9 +1,8 @@
 package com.epam.system_monitoring.service.impl;
 
 import com.epam.system_monitoring.dto.CourseDTO;
-import com.epam.system_monitoring.dto.ModuleDTO;
 import com.epam.system_monitoring.entity.Course;
-import com.epam.system_monitoring.entity.Module;
+import com.epam.system_monitoring.exception.TitleAlreadyExistException;
 import com.epam.system_monitoring.exception.CourseNotFoundException;
 import com.epam.system_monitoring.mappers.CourseMapper;
 import com.epam.system_monitoring.repository.CourseRepository;
@@ -11,7 +10,6 @@ import com.epam.system_monitoring.service.CourseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,80 +18,90 @@ import java.util.Optional;
 public class CourseServiceImpl implements CourseService {
 
     private final CourseRepository courseRepository;
-    private final ModuleServiceImpl moduleService;
 
+    /**
+     * Получить все курсы.
+     *
+     * @return лист курсов.
+     */
     @Override
-    @Transactional
     public List<Course> getAllCourses() {
         return courseRepository.findAll();
     }
 
+    /**
+     * Получить курс по id.
+     *
+     * @param id курса.
+     * @return курс.
+     */
     @Override
-    @Transactional
     public Course getCourseById(Long id) {
-        Optional<Course> course = courseRepository.findById(id);
-        if (course.isPresent()) {
-            return course.get();
-        } else {
-            throw new CourseNotFoundException("Course not found with id: " + id);
-        }
+        return courseRepository.findById(id)
+                .orElseThrow(() -> new CourseNotFoundException("Course not found with id: " + id));
     }
 
+    /**
+     * Получить курс по названию.
+     *
+     * @param title название курса.
+     * @return курс.
+     */
     @Override
-    @Transactional
     public Course getCourseByTitle(String title) {
-        Optional<Course> course = courseRepository.findByTitle(title);
-        if (course.isPresent()) {
-            return course.get();
-        } else {
-            throw new CourseNotFoundException("Course not found with title: " + title);
-        }
+        return courseRepository.findByTitle(title)
+                .orElseThrow(() -> new CourseNotFoundException("Course not found with title: " + title));
     }
 
+    //todo подумать...
+
+    /**
+     * Сохрнаить новый курс.
+     *
+     * @param courseDTO курс переданный с клиента.
+     * @return сохраненный курс.
+     */
     @Override
-    @Transactional
     public Course saveCourse(CourseDTO courseDTO) {
-        //todo создать исключение уникального названия title.
-        return courseRepository.save(CourseMapper.INSTANCE.toCourse(courseDTO));
-    }
+        Optional<Course> optCourse = courseRepository.findByTitle(courseDTO.getTitle());
 
-    @Override
-    @Transactional
-    public Course updateCourse(String titleOldCourse, CourseDTO newCourseDTO) {
-        Optional<Course> oldCourse = courseRepository.findByTitle(titleOldCourse);
-
-        if (oldCourse.isPresent()) {
-            Course course = oldCourse.get();
-            course.setTitle(newCourseDTO.getTitle());
+        if (optCourse.isEmpty()) {
+            Course course = CourseMapper.INSTANCE.toCourse(courseDTO);
             return courseRepository.save(course);
         } else {
-            throw new CourseNotFoundException("Course not found with title: " + titleOldCourse);
+            throw new TitleAlreadyExistException("A course with this title already exists");
         }
     }
 
+    /**
+     * Обновить курс.
+     *
+     * @param id        курса.
+     * @param courseDTO курс переданный с клиента.
+     * @return обновленный курс.
+     */
     @Override
-    @Transactional
+    public Course updateCourse(Long id, CourseDTO courseDTO) {
+        Course course = courseRepository.findById(id)
+                .orElseThrow(() -> new CourseNotFoundException("Course not found with id: " + id));
+
+        course.setTitle(courseDTO.getTitle());
+        return courseRepository.save(course);
+    }
+
+    /**
+     * Удалить курс.
+     * При удалении курса удалятся также все модули из БД.
+     *
+     * @param id курса.
+     * @return строка.
+     */
+    @Override
     public String deleteCourse(Long id) {
-        Optional<Course> course = courseRepository.findById(id);
-        if (course.isPresent()) {
-            courseRepository.delete(course.get());
-            return String.format("Course with id: %d was deleted", id);
-        } else {
-            throw new CourseNotFoundException("Course not found with id: " + id);
-        }
-    }
+        Course course = courseRepository.findById(id)
+                .orElseThrow(() -> new CourseNotFoundException("Course not found with id: " + id));
 
-    @Override
-    @Transactional
-    public Course addNewModuleToCourse(Long courseId, ModuleDTO moduleDTO) {
-        Optional<Course> optCourse = courseRepository.findById(courseId);
-        if (optCourse.isPresent()) {
-            Course course = optCourse.get();
-            Module module = moduleService.saveModule(moduleDTO);
-            course.getModules().add(module);
-            return courseRepository.save(course);
-        } else {
-            throw new CourseNotFoundException("Course not found with id: " + courseId);
-        }
+        courseRepository.delete(course);
+        return String.format("Course with id: %d was deleted", id);
     }
 }

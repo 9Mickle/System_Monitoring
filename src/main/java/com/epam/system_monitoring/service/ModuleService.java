@@ -7,7 +7,11 @@ public interface ModuleService {
 
     Module getModuleById(Long id);
 
+    Module getModuleByTitle(String title);
+
+    Module updateModule(Long moduleId, ModuleDTO moduleDTO);
+
     Module saveModule(ModuleDTO moduleDTO);
 
-    void deleteModule(Long id);
+    String deleteModule(Long id);
 }

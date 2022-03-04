@@ -16,9 +16,9 @@ public interface CourseService {
 
     Course saveCourse(CourseDTO courseDTO);
 
-    Course updateCourse(String titleOldCourse, CourseDTO newCourseDTO);
+    Course updateCourse(Long id, CourseDTO newCourseDTO);
 
     String deleteCourse(Long id);
 
-    Course addNewModuleToCourse(Long courseId, ModuleDTO moduleDTO);
+//    Course createNewModuleToCourse(Long courseId, ModuleDTO moduleDTO);
 }
