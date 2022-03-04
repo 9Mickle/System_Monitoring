@@ -29,23 +29,42 @@ public class ModuleController {
         return new ResponseEntity<>(moduleDTO, HttpStatus.OK);
     }
 
+    @GetMapping("/title/{title}")
+    public ResponseEntity<Object> getModuleByTitle(@PathVariable String title) {
+        ModuleDTO moduleDTO = ModuleMapper.INSTANCE.toDTO(moduleService.getModuleByTitle(title));
+
+        return new ResponseEntity<>(moduleDTO, HttpStatus.OK);
+    }
+
     @PostMapping("/create")
-    public ResponseEntity<Object> createModule(@RequestBody @Valid ModuleDTO moduleDTO, BindingResult bindingResult) {
+    public ResponseEntity<Object> createModule(@RequestBody @Valid ModuleDTO moduleDTO,
+                                               BindingResult bindingResult) {
+
         ResponseEntity<Object> errors = validation.mapValidationService(bindingResult);
         if (!ObjectUtils.isEmpty(errors)) {
             return errors;
         }
+        ModuleDTO createdModuleDTO = ModuleMapper.INSTANCE.toDTO(moduleService.saveModule(moduleDTO));
 
-        ModuleDTO createdModuleDto = ModuleMapper.INSTANCE.toDTO(moduleService.saveModule(moduleDTO));
+        return new ResponseEntity<>(createdModuleDTO, HttpStatus.OK);
+    }
 
-        return new ResponseEntity<>(createdModuleDto, HttpStatus.CREATED);
+    @PostMapping("/update/{id}")
+    public ResponseEntity<Object> updateModule(@PathVariable Long id,
+                                               @RequestBody @Valid ModuleDTO moduleDTO,
+                                               BindingResult bindingResult) {
+        ResponseEntity<Object> errors = validation.mapValidationService(bindingResult);
+        if (!ObjectUtils.isEmpty(errors)) {
+            return errors;
+        }
+        ModuleDTO updatedModuleDTO = ModuleMapper.INSTANCE.
+                toDTO(moduleService.updateModule(id, moduleDTO));
+
+        return new ResponseEntity<>(updatedModuleDTO, HttpStatus.OK);
     }
 
     @PostMapping("/delete/{id}")
     public ResponseEntity<Object> deleteModule(@PathVariable Long id) {
-        moduleService.deleteModule(id);
-
-        return new ResponseEntity<>(String.format("Module with id: %d was deleted", id), HttpStatus.OK);
+        return new ResponseEntity<>(moduleService.deleteModule(id), HttpStatus.OK);
     }
-
 }
