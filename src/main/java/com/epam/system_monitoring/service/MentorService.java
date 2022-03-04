@@ -1,7 +1,6 @@
 package com.epam.system_monitoring.service;
 
 import com.epam.system_monitoring.dto.MentorDTO;
-import com.epam.system_monitoring.dto.StudentDTO;
 import com.epam.system_monitoring.entity.Mentor;
 
 public interface MentorService {
