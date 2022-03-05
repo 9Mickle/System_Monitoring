@@ -82,6 +82,11 @@ public class CourseServiceImpl implements CourseService {
      */
     @Override
     public Course updateCourse(Long id, CourseDTO courseDTO) {
+
+        if (courseRepository.existsByTitle(courseDTO.getTitle())) {
+            throw new TitleAlreadyExistException("A course with this title already exists");
+        }
+
         Course course = courseRepository.findById(id)
                 .orElseThrow(() -> new CourseNotFoundException("Course not found with id: " + id));
 
