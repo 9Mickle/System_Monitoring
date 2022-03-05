@@ -1,14 +1,11 @@
 package com.epam.system_monitoring.service.impl;
 
 import com.epam.system_monitoring.dto.CourseDTO;
-import com.epam.system_monitoring.dto.ModuleDTO;
 import com.epam.system_monitoring.entity.Course;
-import com.epam.system_monitoring.entity.Module;
 import com.epam.system_monitoring.exception.CourseNotFoundException;
+import com.epam.system_monitoring.exception.TitleAlreadyExistException;
 import com.epam.system_monitoring.mappers.CourseMapper;
-import com.epam.system_monitoring.mappers.ModuleMapper;
 import com.epam.system_monitoring.repository.CourseRepository;
-import com.epam.system_monitoring.repository.ModuleRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,48 +18,42 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
-//@SpringBootTest
 @ExtendWith(MockitoExtension.class)
 class CourseServiceImplTest {
+
+    private static Course course;
 
     @Mock
     private CourseRepository courseRepository;
 
-    @Mock
-    private ModuleRepository moduleRepository;
-
     @InjectMocks
     private CourseServiceImpl courseService;
-    @InjectMocks
-    private ModuleServiceImpl moduleService;
 
     @BeforeEach
     public void setUp() {
-        courseService = new CourseServiceImpl(courseRepository, moduleService);
-        moduleService = new ModuleServiceImpl(moduleRepository);
+        courseService = new CourseServiceImpl(courseRepository);
+        course = new Course(1L, "Course 1", List.of());
     }
 
     @Test
     public void canGetAllCourses() {
-        Course course = new Course();
-        List<Course> exist = List.of(course);
+        List<Course> courses = List.of(
+                new Course(1L, "Course 1", List.of()),
+                new Course(2L, "Course 2", List.of()));
 
-        when(courseRepository.findAll()).thenReturn(exist);
-        assertEquals(exist, courseService.getAllCourses());
+        when(courseRepository.findAll()).thenReturn(courses);
+        assertEquals(courses.size(), courseService.getAllCourses().size());
         verify(courseRepository).findAll();
     }
 
     @Test
     public void canGetCourseById() {
         Long courseId = 1L;
-        Course course = new Course();
-        Optional<Course> exist = Optional.of(course);
 
-        when(courseRepository.findById(courseId)).thenReturn(exist);
-        assertEquals(exist.get(), courseService.getCourseById(courseId));
+        when(courseRepository.findById(courseId)).thenReturn(Optional.of(course));
+        assertEquals(course, courseService.getCourseById(courseId));
         verify(courseRepository).findById(courseId);
     }
 
@@ -70,86 +61,66 @@ class CourseServiceImplTest {
     public void canGetCourseByTitle() {
         String title = "Course 1";
 
-        CourseDTO courseDTO = new CourseDTO(title, List.of());
-        Course course = CourseMapper.INSTANCE.toCourse(courseDTO);
-        Optional<Course> exist = Optional.of(course);
-
-        when(courseRepository.findByTitle(title)).thenReturn(exist);
-        assertEquals(exist.get(), courseService.getCourseByTitle(title));
+        when(courseRepository.findByTitle(title)).thenReturn(Optional.of(course));
+        assertEquals(course, courseService.getCourseByTitle(title));
         verify(courseRepository).findByTitle(title);
     }
 
     @Test
     public void willThrowCourseNotFoundExceptionWithId() {
-        assertThrows(CourseNotFoundException.class, () -> courseService.getCourseById(2L));
+        Long courseId = 1L;
+        when(courseRepository.findById(courseId)).thenThrow(CourseNotFoundException.class);
+        assertThrows(CourseNotFoundException.class, () -> courseService.getCourseById(courseId));
     }
 
     @Test
     public void willThrowCourseNotFoundExceptionWithTitle() {
-        assertThrows(CourseNotFoundException.class, () -> courseService.getCourseByTitle("Test title"));
+        String title = "Course 1";
+        when(courseRepository.findByTitle(title)).thenThrow(CourseNotFoundException.class);
+        assertThrows(CourseNotFoundException.class, () -> courseService.getCourseByTitle(title));
     }
 
-    /**
-     * Правильно?
-     */
     @Test
     public void canSaveCourse() {
-        CourseDTO courseDTO = new CourseDTO();
-        Course exist = CourseMapper.INSTANCE.toCourse(courseDTO);
+        course.setId(null);
+        CourseDTO courseDTO = CourseMapper.INSTANCE.toDTO(course);
 
-        when(courseRepository.save(exist)).thenReturn(exist);
-        assertEquals(exist, courseService.saveCourse(courseDTO));
-        verify(courseRepository).save(exist);
+        when(courseRepository.save(course)).thenReturn(course);
+        assertEquals(course, courseService.saveCourse(courseDTO));
+        verify(courseRepository).save(course);
     }
 
-    /**
-     * Как не дублировать тесты?
-     */
+    @Test
+    public void willThrowTitleAlreadyExistException() {
+        String sameTitle = "Course 1";
+        CourseDTO courseDTO = new CourseDTO();
+        courseDTO.setTitle(sameTitle);
+
+        when(courseRepository.existsByTitle(sameTitle)).thenThrow(TitleAlreadyExistException.class);
+        assertThrows(TitleAlreadyExistException.class, () -> courseService.updateCourse(1L, courseDTO));
+        verify(courseRepository).existsByTitle(sameTitle);
+    }
+
     @Test
     public void canUpdateCourse() {
-        String oldCourseTitle = "Course 1";
+        Course updatedCourse = new Course();
+        String newTitle = "Course 2";
 
-        CourseDTO courseDTO = new CourseDTO(oldCourseTitle, List.of());
-        Optional<Course> existOldCourse = Optional.of(CourseMapper.INSTANCE.toCourse(courseDTO));
-
-        CourseDTO updatedCourseDTO = new CourseDTO("Course 2", List.of());
-        Course updatedCourse = CourseMapper.INSTANCE.toCourse(updatedCourseDTO);
-
-        when(courseRepository.findByTitle(oldCourseTitle)).thenReturn(existOldCourse);
-        assertEquals(existOldCourse.get(), courseService.getCourseByTitle(oldCourseTitle));
-        verify(courseRepository).findByTitle(oldCourseTitle);
+        updatedCourse.setId(null);
+        updatedCourse.setTitle(newTitle);
+        updatedCourse.setModules(course.getModules());
+        CourseDTO updatedCourseDTO = CourseMapper.INSTANCE.toDTO(updatedCourse);
 
         when(courseRepository.save(updatedCourse)).thenReturn(updatedCourse);
-        assertEquals(updatedCourse, courseService.updateCourse(oldCourseTitle, updatedCourseDTO));
+        assertEquals(newTitle, courseService.saveCourse(updatedCourseDTO).getTitle());
         verify(courseRepository).save(updatedCourse);
     }
 
-//    /**
-//     * Как протестировать удаление?
-//     */
-//    @Test
-//    public void canDeleteCourse() {
-//        Course course = new Course();
-//        when(courseRepository.delete(course)).thenReturn();
-//
-//    }
-
-
     @Test
-    public void canAddNewModuleInCourse() {
-        Long courseId = 1L;
-
-        CourseDTO courseDTO = new CourseDTO("Title", List.of());
-        //Конвертирую ДТО, чтобы избежать NullPointerException при .getModules();
-        Optional<Course> course = Optional.of(CourseMapper.INSTANCE.toCourse(courseDTO));
-
-        ModuleDTO moduleDTO = new ModuleDTO();
-        Module module = ModuleMapper.INSTANCE.toModule(moduleDTO);
-        course.get().getModules().add(module);
-
-        when(courseRepository.findById(courseId)).thenReturn(course);
-//        when(moduleRepository.save(module)).thenReturn(module);??
-        when(courseRepository.save(course.get())).thenReturn(course.get());
-        assertEquals(course.get(), courseService.addNewModuleToCourse(courseId, moduleDTO));
+    public void canDeleteCourse() {
+        when(courseRepository.findById(course.getId())).thenReturn(Optional.of(course));
+        doNothing().when(courseRepository).delete(course);
+        courseService.deleteCourse(course.getId());
+        verify(courseRepository, times(1)).delete(course);
     }
 }
