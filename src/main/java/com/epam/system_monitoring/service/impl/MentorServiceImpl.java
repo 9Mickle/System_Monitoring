@@ -44,12 +44,13 @@ public class MentorServiceImpl implements MentorService {
      */
     @Override
     public Mentor updateMentor(Long id, MentorDTO mentorDTO) {
-        Mentor mentor = mentorRepository.findById(id)
-                .orElseThrow(() -> new MentorNotFoundException("Mentor not found with id: " + id));
 
         if (mentorRepository.existsByUsername(mentorDTO.getUsername())) {
             throw new UsernameAlreadyExistException("A mentor with that username already exists");
         }
+
+        Mentor mentor = mentorRepository.findById(id)
+                .orElseThrow(() -> new MentorNotFoundException("Mentor not found with id: " + id));
 
         mentor.setName(mentorDTO.getName());
         mentor.setSurname(mentorDTO.getSurname());

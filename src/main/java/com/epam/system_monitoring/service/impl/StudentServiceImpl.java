@@ -60,12 +60,13 @@ public class StudentServiceImpl implements StudentService {
      */
     @Override
     public Student updateStudent(Long id, StudentDTO studentDTO) {
-        Student student = studentRepository.findById(id)
-                .orElseThrow(() -> new StudentNotFoundException("Student not found with id: " + id));
 
         if (studentRepository.existsByUsername(studentDTO.getUsername())) {
             throw new UsernameAlreadyExistException("A student with that username already exists");
         }
+
+        Student student = studentRepository.findById(id)
+                .orElseThrow(() -> new StudentNotFoundException("Student not found with id: " + id));
 
         student.setName(studentDTO.getName());
         student.setSurname(studentDTO.getSurname());
