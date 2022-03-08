@@ -5,6 +5,7 @@ import java.lang.annotation.RetentionPolicy;
 
 /**
  * Для того чтобы у json'а ДТО сущностей был корневой элемент.
+ *
  */
 @Retention(value = RetentionPolicy.RUNTIME)
 public @interface CustomJsonRootName {
