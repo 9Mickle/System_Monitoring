@@ -1,5 +1,6 @@
 package com.epam.system_monitoring.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -8,6 +9,7 @@ import java.time.LocalTime;
 
 @Entity
 @Data
+@AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "module")
 public class Module {
