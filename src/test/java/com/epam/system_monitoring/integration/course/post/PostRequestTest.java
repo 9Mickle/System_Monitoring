@@ -19,10 +19,8 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.nio.charset.StandardCharsets;
-import java.util.List;
 import java.util.Optional;
 
-import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -47,7 +45,7 @@ class PostRequestTest {
 
     @BeforeEach
     public void setUp() {
-        course = new Course(1L, "Course 1", List.of());
+        course = new Course(1L, "Course 1", null);
 
         when(courseRepository.findById(1L)).thenReturn(Optional.of(course));
         mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
@@ -55,7 +53,7 @@ class PostRequestTest {
 
     @Test
     public void shouldCreateNewCourse() throws Exception {
-        CourseDTO courseDTO = new CourseDTO("Test title", List.of());
+        CourseDTO courseDTO = new CourseDTO("Test title");
         Course newCourse = CourseMapper.INSTANCE.toCourse(courseDTO);
         when(courseRepository.save(newCourse)).thenReturn(newCourse);
 
@@ -66,8 +64,6 @@ class PostRequestTest {
                 .andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.title", is("Test title")))
-                .andExpect(jsonPath("$.modules").isArray())
-                .andExpect(jsonPath("$.modules", hasSize(0)))
                 .andReturn();
 
         verify(courseRepository).findByTitle(courseDTO.getTitle());
@@ -76,11 +72,10 @@ class PostRequestTest {
 
     @Test
     public void shouldUpdateCourse() throws Exception {
-        CourseDTO courseDTO = new CourseDTO("Updated title", List.of());
+        CourseDTO courseDTO = new CourseDTO("Updated title");
         Course updatedCourse = CourseMapper.INSTANCE.toCourse(courseDTO);
         updatedCourse.setId(course.getId());
 
-        when(courseRepository.existsByTitle(courseDTO.getTitle())).thenReturn(false);
         when(courseRepository.save(updatedCourse)).thenReturn(updatedCourse);
 
         mockMvc.perform(post("http://localhost:8080/api/course/update/" + course.getId())
@@ -90,18 +85,15 @@ class PostRequestTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.title", is("Updated title")))
-                .andExpect(jsonPath("$.modules").isArray())
-                .andExpect(jsonPath("$.modules", hasSize(0)))
                 .andReturn();
 
-        verify(courseRepository).existsByTitle(courseDTO.getTitle());
         verify(courseRepository).findById(course.getId());
         verify(courseRepository).save(updatedCourse);
     }
 
     @Test
     public void willThrowTitleAlreadyExistExceptionWhenUpdateCourse() throws Exception {
-        CourseDTO courseDTO = new CourseDTO("Course 1", List.of());
+        CourseDTO courseDTO = new CourseDTO("Course 1");
         Course testCourse = CourseMapper.INSTANCE.toCourse(courseDTO);
         course.setId(course.getId());
 
