@@ -5,7 +5,7 @@ CREATE TABLE public.mentor
     surname character varying(255) COLLATE pg_catalog."default",
     username character varying(255) COLLATE pg_catalog."default",
     CONSTRAINT mentor_pkey PRIMARY KEY (id),
-    CONSTRAINT uk_2mjkqn867bi7hmxsxsoutmjcw UNIQUE (username)
+    CONSTRAINT unique_mentor_username UNIQUE (username)
 )
 GO
 ALTER TABLE public.mentor

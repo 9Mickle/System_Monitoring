@@ -6,8 +6,8 @@ CREATE TABLE public.student
     username character varying(255) COLLATE pg_catalog."default",
     mentor_id bigint,
     CONSTRAINT student_pkey PRIMARY KEY (id),
-    CONSTRAINT uk_jyet50p17q01ks2bv4sn8i5r7 UNIQUE (username),
-    CONSTRAINT fkfmk16k9whxemgkowg3mt24m3w FOREIGN KEY (mentor_id)
+    CONSTRAINT unique_student_username UNIQUE (username),
+    CONSTRAINT fk_mentor_id FOREIGN KEY (mentor_id)
         REFERENCES public.mentor (id) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE NO ACTION
