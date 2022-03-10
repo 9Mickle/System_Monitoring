@@ -20,6 +20,6 @@ public class MentorDTO {
     private String surname;
     @NotEmpty(message = "The username field cannot be empty!")
     private String username;
-    private List<StudentDTO> students;
-    private List<ModuleDTO> modules;
+//    private List<StudentDTO> students;
+//    private List<ModuleDTO> modules;
 }

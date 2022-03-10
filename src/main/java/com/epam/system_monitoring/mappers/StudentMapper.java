@@ -5,6 +5,8 @@ import com.epam.system_monitoring.entity.Student;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
+import java.util.List;
+
 @Mapper
 public interface StudentMapper {
 
@@ -13,4 +15,6 @@ public interface StudentMapper {
     StudentDTO toDTO(Student student);
 
     Student toStudent(StudentDTO studentDTO);
+
+    List<StudentDTO> toDTOList(List<Student> students);
 }

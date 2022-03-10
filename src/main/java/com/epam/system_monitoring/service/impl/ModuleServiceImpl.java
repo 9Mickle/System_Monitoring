@@ -19,6 +19,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -29,6 +31,11 @@ public class ModuleServiceImpl implements ModuleService {
     private final StudentRepository studentRepository;
     private final MentorRepository mentorRepository;
     private final CourseRepository courseRepository;
+
+    @Override
+    public List<Module> getAllModule() {
+        return moduleRepository.findAll();
+    }
 
     /**
      * Получить модуль по id.
@@ -78,6 +85,7 @@ public class ModuleServiceImpl implements ModuleService {
 
         module.setCourse(course);
         module.setReporter(mentor);
+        module.setStartDate(LocalDateTime.now());
 
         course.getModules().add(module);
         mentor.getModules().add(module);
@@ -115,7 +123,7 @@ public class ModuleServiceImpl implements ModuleService {
 
         module.setTitle(moduleDTO.getTitle());
         module.setDescription(moduleDTO.getDescription());
-        module.setTime(moduleDTO.getTime());
+        module.setDeadline(moduleDTO.getDeadline());
         module.setModuleStatus(moduleDTO.getModuleStatus());
         module.setAssignee(studentById);
         module.setReporter(mentorById);
@@ -131,13 +139,10 @@ public class ModuleServiceImpl implements ModuleService {
      */
     @Override
     public String deleteModule(Long id) {
-        Optional<Module> optModule = moduleRepository.findById(id);
+        moduleRepository.findById(id)
+                .orElseThrow(() -> new ModuleNotFoundException("Module not found with id: " + id));
 
-        if (optModule.isPresent()) {
-            moduleRepository.delete(optModule.get());
-            return String.format("Module with id: %d was deleted.", id);
-        } else {
-            throw new ModuleNotFoundException("Module not found with id: " + id);
-        }
+        moduleRepository.deleteById(id);
+        return String.format("Module with id: %d was deleted.", id);
     }
 }

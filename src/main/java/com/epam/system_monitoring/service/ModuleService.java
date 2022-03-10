@@ -3,7 +3,11 @@ package com.epam.system_monitoring.service;
 import com.epam.system_monitoring.dto.ModuleDTO;
 import com.epam.system_monitoring.entity.Module;
 
+import java.util.List;
+
 public interface ModuleService {
+
+    List<Module> getAllModule();
 
     Module getModuleById(Long id);
 

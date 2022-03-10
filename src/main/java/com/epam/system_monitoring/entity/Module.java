@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 
 @Entity
 @Data
@@ -17,12 +17,20 @@ public class Module {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column
+
+    @Column(nullable = false)
     private String title;
+
     @Column
     private String description;
+
+    @Column(name = "start_date", nullable = false)
+    private LocalDateTime startDate;
+
     @Column
-    private LocalTime time;
+    private LocalDateTime deadline;
+
+    @Column(name = "status", nullable = false)
     @Enumerated(EnumType.STRING)
     private ModuleStatus moduleStatus;
 
@@ -40,7 +48,8 @@ public class Module {
 
     @PreRemove
     private void deleteModule() {
-        this.setAssignee(null);
+        this.setCourse(null);
         this.setReporter(null);
+        this.setAssignee(null);
     }
 }

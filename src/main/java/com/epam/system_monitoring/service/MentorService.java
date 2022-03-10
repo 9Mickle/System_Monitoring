@@ -3,7 +3,11 @@ package com.epam.system_monitoring.service;
 import com.epam.system_monitoring.dto.MentorDTO;
 import com.epam.system_monitoring.entity.Mentor;
 
+import java.util.List;
+
 public interface MentorService {
+
+    List<Mentor> getAllMentors();
 
     Mentor getMentorById(Long id);
 

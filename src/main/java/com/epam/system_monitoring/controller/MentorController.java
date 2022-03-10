@@ -2,9 +2,11 @@ package com.epam.system_monitoring.controller;
 
 import com.epam.system_monitoring.dto.MentorDTO;
 import com.epam.system_monitoring.dto.ModuleDTO;
+import com.epam.system_monitoring.dto.StudentDTO;
 import com.epam.system_monitoring.entity.Mentor;
 import com.epam.system_monitoring.mappers.MentorMapper;
 import com.epam.system_monitoring.mappers.ModuleMapper;
+import com.epam.system_monitoring.mappers.StudentMapper;
 import com.epam.system_monitoring.service.impl.MentorServiceImpl;
 import com.epam.system_monitoring.validation.ResponseErrorValidation;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +29,13 @@ public class MentorController {
 
     private final ResponseErrorValidation validation;
 
+    @GetMapping("/")
+    public ResponseEntity<Object> getAllMentors() {
+        List<MentorDTO> mentorDTOList = MentorMapper.INSTANCE.toDTOList(mentorService.getAllMentors());
+
+        return new ResponseEntity<>(mentorDTOList, HttpStatus.OK);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<Object> getMentor(@PathVariable Long id) {
         MentorDTO mentorDTO = MentorMapper.INSTANCE.toDTO(mentorService.getMentorById(id));
@@ -40,6 +49,14 @@ public class MentorController {
         List<ModuleDTO> moduleDTOList = ModuleMapper.INSTANCE.toDTOList(mentor.getModules());
 
         return new ResponseEntity<>(moduleDTOList, HttpStatus.OK);
+    }
+
+    @GetMapping("/{mentorId}/students")
+    public ResponseEntity<Object> getAllStudentsByMentor(@PathVariable Long mentorId) {
+        Mentor mentor = mentorService.getMentorById(mentorId);
+        List<StudentDTO> studentDTOList = StudentMapper.INSTANCE.toDTOList(mentor.getStudents());
+
+        return new ResponseEntity<>(studentDTOList, HttpStatus.OK);
     }
 
     @PostMapping("/create")

@@ -19,7 +19,6 @@ import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 //todo swagger
 
@@ -35,14 +34,7 @@ public class CourseController {
 
     @GetMapping("/")
     public ResponseEntity<Object> getAllCourses() {
-        List<CourseDTO> courseDTOList = courseService.getAllCourses()
-                .stream()
-                .map(CourseMapper.INSTANCE::toDTO)
-                .collect(Collectors.toList());
-
-        if (courseDTOList.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
+        List<CourseDTO> courseDTOList = CourseMapper.INSTANCE.toDTOList(courseService.getAllCourses());
 
         Map<Object, Object> result = new HashMap<>();
         result.put(CourseDTO.class.getAnnotation(CustomJsonRootName.class).plural(), courseDTOList);

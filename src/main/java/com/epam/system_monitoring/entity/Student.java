@@ -26,7 +26,7 @@ public class Student {
     @JoinColumn(name = "mentor_id")
     private Mentor mentor;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "assignee", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "assignee", cascade = CascadeType.PERSIST)
     private List<Module> modules;
 
     @PreRemove

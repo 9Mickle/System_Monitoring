@@ -5,6 +5,8 @@ import com.epam.system_monitoring.entity.Mentor;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
+import java.util.List;
+
 @Mapper
 public interface MentorMapper {
 
@@ -13,4 +15,6 @@ public interface MentorMapper {
     MentorDTO toDTO(Mentor mentor);
 
     Mentor toMentor(MentorDTO mentorDTO);
+
+    List<MentorDTO> toDTOList(List<Mentor> mentors);
 }

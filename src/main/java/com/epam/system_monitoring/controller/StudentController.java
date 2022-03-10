@@ -2,6 +2,8 @@ package com.epam.system_monitoring.controller;
 
 import com.epam.system_monitoring.dto.ModuleDTO;
 import com.epam.system_monitoring.dto.StudentDTO;
+import com.epam.system_monitoring.entity.Student;
+import com.epam.system_monitoring.mappers.ModuleMapper;
 import com.epam.system_monitoring.mappers.StudentMapper;
 import com.epam.system_monitoring.service.impl.StudentServiceImpl;
 import com.epam.system_monitoring.validation.ResponseErrorValidation;
@@ -25,6 +27,13 @@ public class StudentController {
 
     private final ResponseErrorValidation validation;
 
+    @GetMapping("/")
+    public ResponseEntity<Object> getAllStudents() {
+        List<StudentDTO> studentDTOList = StudentMapper.INSTANCE.toDTOList(studentService.getAllStudents());
+
+        return new ResponseEntity<>(studentDTOList, HttpStatus.OK);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<Object> getStudent(@PathVariable Long id) {
         StudentDTO studentDTO = StudentMapper.INSTANCE.toDTO(studentService.getStudentById(id));
@@ -34,7 +43,8 @@ public class StudentController {
 
     @GetMapping("/{studentId}/modules")
     public ResponseEntity<Object> getAllModulesByAssignee(@PathVariable Long studentId) {
-        List<ModuleDTO> moduleDTOList = studentService.getAllModulesByAssignee(studentId);
+        Student student = studentService.getStudentById(studentId);
+        List<ModuleDTO> moduleDTOList = ModuleMapper.INSTANCE.toDTOList(student.getModules());
 
         return new ResponseEntity<>(moduleDTOList, HttpStatus.OK);
     }

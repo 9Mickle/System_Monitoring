@@ -12,6 +12,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping("api/module")
@@ -22,6 +23,12 @@ public class ModuleController {
     private final ModuleServiceImpl moduleService;
     private final ResponseErrorValidation validation;
 
+    @GetMapping("/")
+    public ResponseEntity<Object> getAllModule() {
+        List<ModuleDTO> moduleDTOList = ModuleMapper.INSTANCE.toDTOList(moduleService.getAllModule());
+
+        return new ResponseEntity<>(moduleDTOList, HttpStatus.OK);
+    }
     @GetMapping("/{id}")
     public ResponseEntity<Object> getModule(@PathVariable Long id) {
         ModuleDTO moduleDTO = ModuleMapper.INSTANCE.toDTO(moduleService.getModuleById(id));

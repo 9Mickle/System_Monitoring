@@ -13,7 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.Optional;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -22,6 +22,11 @@ public class MentorServiceImpl implements MentorService {
     private final MentorRepository mentorRepository;
 
     private final StudentServiceImpl studentService;
+
+    @Override
+    public List<Mentor> getAllMentors() {
+        return mentorRepository.findAll();
+    }
 
     /**
      * Получить ментора по id.
@@ -35,6 +40,7 @@ public class MentorServiceImpl implements MentorService {
                 .orElseThrow(() -> new MentorNotFoundException("Mentor not found with id: " + id));
     }
 
+    //обновить можно, только если изменится username.
     /**
      * Обновить ментора.
      *
@@ -44,18 +50,17 @@ public class MentorServiceImpl implements MentorService {
      */
     @Override
     public Mentor updateMentor(Long id, MentorDTO mentorDTO) {
-
-        if (mentorRepository.existsByUsername(mentorDTO.getUsername())) {
-            throw new UsernameAlreadyExistException("A mentor with that username already exists");
-        }
-
         Mentor mentor = mentorRepository.findById(id)
                 .orElseThrow(() -> new MentorNotFoundException("Mentor not found with id: " + id));
 
-        mentor.setName(mentorDTO.getName());
-        mentor.setSurname(mentorDTO.getSurname());
-        mentor.setUsername(mentorDTO.getUsername());
-        return mentorRepository.save(mentor);
+        if (!mentor.getUsername().equals(mentorDTO.getUsername())) {
+            mentor.setName(mentorDTO.getName());
+            mentor.setSurname(mentorDTO.getSurname());
+            mentor.setUsername(mentorDTO.getUsername());
+            return mentorRepository.save(mentor);
+        } else {
+            throw new UsernameAlreadyExistException("A mentor with that username already exists");
+        }
     }
 
     /**
@@ -66,14 +71,13 @@ public class MentorServiceImpl implements MentorService {
      */
     @Override
     public Mentor saveMentor(MentorDTO mentorDTO) {
-        Optional<Mentor> optMentor = mentorRepository.findByUsername(mentorDTO.getUsername());
+        mentorRepository.findByUsername(mentorDTO.getUsername())
+                .ifPresent(m -> {
+                    throw new UsernameAlreadyExistException("A username already exists");
+                });
 
-        if (optMentor.isEmpty()) {
-            Mentor mentor = MentorMapper.INSTANCE.toMentor(mentorDTO);
-            return mentorRepository.save(mentor);
-        } else {
-            throw new UsernameAlreadyExistException("A username already exists");
-        }
+        Mentor mentor = MentorMapper.INSTANCE.toMentor(mentorDTO);
+        return mentorRepository.save(mentor);
     }
 
     /**

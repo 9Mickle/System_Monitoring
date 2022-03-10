@@ -25,11 +25,12 @@ public class Mentor {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "mentor", cascade = CascadeType.PERSIST)
     private List<Student> students;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "reporter", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "reporter", cascade = CascadeType.PERSIST)
     private List<Module> modules;
 
     @PreRemove
     public void deleteMentor() {
         this.getStudents().forEach(student -> student.setMentor(null));
+        this.getModules().forEach(module -> module.setReporter(null));
     }
 }

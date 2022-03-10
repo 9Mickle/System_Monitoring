@@ -20,7 +20,8 @@ public class Course {
     @Column(unique = true)
     private String title;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "course", cascade = CascadeType.ALL)
+    //Если убрать mappedBy, то будет таблица course_modules
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "course", cascade = {CascadeType.MERGE, CascadeType.PERSIST}, orphanRemoval = true)
     private List<Module> modules;
 
     @PreRemove
