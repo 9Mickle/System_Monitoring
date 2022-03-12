@@ -97,14 +97,14 @@ class PostRequestTest {
         Course testCourse = CourseMapper.INSTANCE.toCourse(courseDTO);
         course.setId(course.getId());
 
-        when(courseRepository.existsByTitle(courseDTO.getTitle())).thenReturn(true);
+        when(courseRepository.findByTitle(courseDTO.getTitle())).thenReturn(Optional.of(course));
         mockMvc.perform(post("http://localhost:8080/api/course/update/" + course.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(courseDTO))
                         .characterEncoding(StandardCharsets.UTF_8))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message", is("A course with this title already exists")))
+                .andExpect(jsonPath("$.message", is("A course with that title already exists!")))
                 .andReturn();
 
         verify(courseRepository, never()).save(testCourse);

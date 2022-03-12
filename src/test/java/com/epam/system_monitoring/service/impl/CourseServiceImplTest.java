@@ -2,8 +2,8 @@ package com.epam.system_monitoring.service.impl;
 
 import com.epam.system_monitoring.dto.CourseDTO;
 import com.epam.system_monitoring.entity.Course;
-import com.epam.system_monitoring.exception.CourseNotFoundException;
-import com.epam.system_monitoring.exception.TitleAlreadyExistException;
+import com.epam.system_monitoring.exception.found.CourseNotFoundException;
+import com.epam.system_monitoring.exception.exist.TitleAlreadyExistException;
 import com.epam.system_monitoring.mappers.CourseMapper;
 import com.epam.system_monitoring.repository.CourseRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -34,14 +34,14 @@ class CourseServiceImplTest {
     @BeforeEach
     public void setUp() {
         courseService = new CourseServiceImpl(courseRepository);
-        course = new Course(1L, "Course 1", List.of());
+        course = new Course(1L, "Course 1", null);
     }
 
     @Test
     public void canGetAllCourses() {
         List<Course> courses = List.of(
-                new Course(1L, "Course 1", List.of()),
-                new Course(2L, "Course 2", List.of()));
+                new Course(1L, "Course 1", null),
+                new Course(2L, "Course 2", null));
 
         when(courseRepository.findAll()).thenReturn(courses);
         assertEquals(courses.size(), courseService.getAllCourses().size());
@@ -96,9 +96,9 @@ class CourseServiceImplTest {
         CourseDTO courseDTO = new CourseDTO();
         courseDTO.setTitle(sameTitle);
 
-        when(courseRepository.existsByTitle(sameTitle)).thenThrow(TitleAlreadyExistException.class);
+        when(courseRepository.findByTitle(sameTitle)).thenReturn(Optional.of(course));
         assertThrows(TitleAlreadyExistException.class, () -> courseService.updateCourse(1L, courseDTO));
-        verify(courseRepository).existsByTitle(sameTitle);
+        verify(courseRepository).findByTitle(sameTitle);
     }
 
     @Test
@@ -108,7 +108,6 @@ class CourseServiceImplTest {
 
         updatedCourse.setId(null);
         updatedCourse.setTitle(newTitle);
-        updatedCourse.setModules(course.getModules());
         CourseDTO updatedCourseDTO = CourseMapper.INSTANCE.toDTO(updatedCourse);
 
         when(courseRepository.save(updatedCourse)).thenReturn(updatedCourse);
@@ -119,8 +118,8 @@ class CourseServiceImplTest {
     @Test
     public void canDeleteCourse() {
         when(courseRepository.findById(course.getId())).thenReturn(Optional.of(course));
-        doNothing().when(courseRepository).delete(course);
+        doNothing().when(courseRepository).deleteById(course.getId());
         courseService.deleteCourse(course.getId());
-        verify(courseRepository, times(1)).delete(course);
+        verify(courseRepository, times(1)).deleteById(course.getId());
     }
 }
