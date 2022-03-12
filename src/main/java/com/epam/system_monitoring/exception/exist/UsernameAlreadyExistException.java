@@ -1,4 +1,4 @@
-package com.epam.system_monitoring.exception;
+package com.epam.system_monitoring.exception.exist;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
