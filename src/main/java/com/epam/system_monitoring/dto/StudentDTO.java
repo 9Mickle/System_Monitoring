@@ -17,6 +17,5 @@ public class StudentDTO {
     private String name;
     @NotEmpty(message = "The surname field cannot be empty!")
     private String surname;
-    @NotEmpty(message = "The username field cannot be empty!")
     private String username;
 }

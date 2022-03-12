@@ -3,9 +3,11 @@ package com.epam.system_monitoring.service.impl;
 import com.epam.system_monitoring.dto.MentorDTO;
 import com.epam.system_monitoring.entity.Mentor;
 import com.epam.system_monitoring.entity.Student;
-import com.epam.system_monitoring.exception.MentorNotFoundException;
-import com.epam.system_monitoring.exception.ModuleNotFoundException;
-import com.epam.system_monitoring.exception.UsernameAlreadyExistException;
+import com.epam.system_monitoring.exception.data.DataCannotBeChangedException;
+import com.epam.system_monitoring.exception.data.NotEnoughDataException;
+import com.epam.system_monitoring.exception.exist.UsernameAlreadyExistException;
+import com.epam.system_monitoring.exception.found.MentorNotFoundException;
+import com.epam.system_monitoring.exception.found.ModuleNotFoundException;
 import com.epam.system_monitoring.mappers.MentorMapper;
 import com.epam.system_monitoring.repository.MentorRepository;
 import com.epam.system_monitoring.service.MentorService;
@@ -40,29 +42,6 @@ public class MentorServiceImpl implements MentorService {
                 .orElseThrow(() -> new MentorNotFoundException("Mentor not found with id: " + id));
     }
 
-    //обновить можно, только если изменится username.
-    /**
-     * Обновить ментора.
-     *
-     * @param id        ментора.
-     * @param mentorDTO полученный с клиента ментор.
-     * @return обновленный ментор.
-     */
-    @Override
-    public Mentor updateMentor(Long id, MentorDTO mentorDTO) {
-        Mentor mentor = mentorRepository.findById(id)
-                .orElseThrow(() -> new MentorNotFoundException("Mentor not found with id: " + id));
-
-        if (!mentor.getUsername().equals(mentorDTO.getUsername())) {
-            mentor.setName(mentorDTO.getName());
-            mentor.setSurname(mentorDTO.getSurname());
-            mentor.setUsername(mentorDTO.getUsername());
-            return mentorRepository.save(mentor);
-        } else {
-            throw new UsernameAlreadyExistException("A mentor with that username already exists");
-        }
-    }
-
     /**
      * Сохранить нового ментора.
      *
@@ -71,12 +50,37 @@ public class MentorServiceImpl implements MentorService {
      */
     @Override
     public Mentor saveMentor(MentorDTO mentorDTO) {
+        if (mentorDTO.getUsername() == null) {
+            throw new NotEnoughDataException("Username is missing for saving!");
+        }
+
         mentorRepository.findByUsername(mentorDTO.getUsername())
                 .ifPresent(m -> {
-                    throw new UsernameAlreadyExistException("A username already exists");
+                    throw new UsernameAlreadyExistException("A username already exists!");
                 });
 
         Mentor mentor = MentorMapper.INSTANCE.toMentor(mentorDTO);
+        return mentorRepository.save(mentor);
+    }
+
+    /**
+     * Обновить ментора. Обновить поле username нельзя.
+     *
+     * @param id        ментора.
+     * @param mentorDTO полученный с клиента ментор.
+     * @return обновленный ментор.
+     */
+    @Override
+    public Mentor updateMentor(Long id, MentorDTO mentorDTO) {
+        if (mentorDTO.getUsername() != null) {
+            throw new DataCannotBeChangedException("Username cannot be updated!");
+        }
+
+        Mentor mentor = mentorRepository.findById(id)
+                .orElseThrow(() -> new MentorNotFoundException("Mentor not found with id: " + id));
+
+        mentor.setName(mentorDTO.getName());
+        mentor.setSurname(mentorDTO.getSurname());
         return mentorRepository.save(mentor);
     }
 

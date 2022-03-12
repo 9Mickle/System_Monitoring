@@ -2,8 +2,10 @@ package com.epam.system_monitoring.service.impl;
 
 import com.epam.system_monitoring.dto.StudentDTO;
 import com.epam.system_monitoring.entity.Student;
-import com.epam.system_monitoring.exception.StudentNotFoundException;
-import com.epam.system_monitoring.exception.UsernameAlreadyExistException;
+import com.epam.system_monitoring.exception.data.DataCannotBeChangedException;
+import com.epam.system_monitoring.exception.data.NotEnoughDataException;
+import com.epam.system_monitoring.exception.found.StudentNotFoundException;
+import com.epam.system_monitoring.exception.exist.UsernameAlreadyExistException;
 import com.epam.system_monitoring.mappers.StudentMapper;
 import com.epam.system_monitoring.repository.StudentRepository;
 import com.epam.system_monitoring.service.StudentService;
@@ -35,30 +37,6 @@ public class StudentServiceImpl implements StudentService {
                 .orElseThrow(() -> new StudentNotFoundException("Student not found with id: " + id));
     }
 
-    //обновить можно, только если изменится username, а так не должно быть...
-    /**
-     * Обновить студента.
-     *
-     * @param id         студента.
-     * @param studentDTO студент переданный с клиента.
-     * @return обновленный студент.
-     */
-    @Override
-    public Student updateStudent(Long id, StudentDTO studentDTO) {
-        Student student = studentRepository.findById(id)
-                .orElseThrow(() -> new StudentNotFoundException("Student not found with id: " + id));
-
-        if (!student.getUsername().equals(studentDTO.getUsername())) {
-            student.setName(studentDTO.getName());
-            student.setSurname(studentDTO.getSurname());
-            student.setUsername(studentDTO.getUsername());
-            return studentRepository.save(student);
-        } else {
-            throw new UsernameAlreadyExistException("A student with that username already exists");
-        }
-
-    }
-
     /**
      * Сохранить нового студента.
      *
@@ -67,12 +45,37 @@ public class StudentServiceImpl implements StudentService {
      */
     @Override
     public Student saveStudent(StudentDTO studentDTO) {
+        if (studentDTO.getUsername() == null) {
+            throw new NotEnoughDataException("Username is missing for saving");
+        }
+
         studentRepository.findByUsername(studentDTO.getUsername())
                 .ifPresent(s -> {
                     throw new UsernameAlreadyExistException("A username already exists");
                 });
 
         Student student = StudentMapper.INSTANCE.toStudent(studentDTO);
+        return studentRepository.save(student);
+    }
+
+    /**
+     * Обновить студента. Обновить поле username нельзя.
+     *
+     * @param id         студента.
+     * @param studentDTO студент переданный с клиента.
+     * @return обновленный студент.
+     */
+    @Override
+    public Student updateStudent(Long id, StudentDTO studentDTO) {
+        if (studentDTO.getUsername() != null) {
+            throw new DataCannotBeChangedException("Username cannot be updated!");
+        }
+
+        Student student = studentRepository.findById(id)
+                .orElseThrow(() -> new StudentNotFoundException("Student not found with id: " + id));
+
+        student.setName(studentDTO.getName());
+        student.setSurname(studentDTO.getSurname());
         return studentRepository.save(student);
     }
 

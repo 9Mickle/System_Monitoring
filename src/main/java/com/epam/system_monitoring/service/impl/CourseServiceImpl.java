@@ -2,8 +2,8 @@ package com.epam.system_monitoring.service.impl;
 
 import com.epam.system_monitoring.dto.CourseDTO;
 import com.epam.system_monitoring.entity.Course;
-import com.epam.system_monitoring.exception.CourseNotFoundException;
-import com.epam.system_monitoring.exception.TitleAlreadyExistException;
+import com.epam.system_monitoring.exception.found.CourseNotFoundException;
+import com.epam.system_monitoring.exception.exist.TitleAlreadyExistException;
 import com.epam.system_monitoring.mappers.CourseMapper;
 import com.epam.system_monitoring.repository.CourseRepository;
 import com.epam.system_monitoring.service.CourseService;
@@ -80,15 +80,16 @@ public class CourseServiceImpl implements CourseService {
      */
     @Override
     public Course updateCourse(Long id, CourseDTO courseDTO) {
+        courseRepository.findByTitle(courseDTO.getTitle())
+                .ifPresent(c -> {
+                    throw new TitleAlreadyExistException("A course with that title already exists!");
+                });
+
         Course course = courseRepository.findById(id)
                 .orElseThrow(() -> new CourseNotFoundException("Course not found with id: " + id));
 
-        if (!course.getTitle().equals(courseDTO.getTitle())) {
-            course.setTitle(courseDTO.getTitle());
-            return courseRepository.save(course);
-        } else {
-            throw new TitleAlreadyExistException("A course with this title already exists");
-        }
+        course.setTitle(courseDTO.getTitle());
+        return courseRepository.save(course);
     }
 
     /**
