@@ -40,11 +40,11 @@ class CourseServiceImplTest {
     @Test
     public void canGetAllCourses() {
         List<Course> courses = List.of(
-                new Course(1L, "Course 1", null),
+                course,
                 new Course(2L, "Course 2", null));
 
         when(courseRepository.findAll()).thenReturn(courses);
-        assertEquals(courses.size(), courseService.getAllCourses().size());
+        assertEquals(courses, courseService.getAllCourses());
         verify(courseRepository).findAll();
     }
 
@@ -67,14 +67,14 @@ class CourseServiceImplTest {
     }
 
     @Test
-    public void willThrowCourseNotFoundExceptionWithId() {
+    public void willThrowCourseNotFoundExceptionById() {
         Long courseId = 1L;
         when(courseRepository.findById(courseId)).thenThrow(CourseNotFoundException.class);
         assertThrows(CourseNotFoundException.class, () -> courseService.getCourseById(courseId));
     }
 
     @Test
-    public void willThrowCourseNotFoundExceptionWithTitle() {
+    public void willThrowCourseNotFoundExceptionByTitle() {
         String title = "Course 1";
         when(courseRepository.findByTitle(title)).thenThrow(CourseNotFoundException.class);
         assertThrows(CourseNotFoundException.class, () -> courseService.getCourseByTitle(title));
