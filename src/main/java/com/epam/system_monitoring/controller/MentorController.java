@@ -68,7 +68,7 @@ public class MentorController {
         }
         MentorDTO createdMentorDTO = MentorMapper.INSTANCE.toDTO(mentorService.saveMentor(mentorDTO));
 
-        return new ResponseEntity<>(createdMentorDTO, HttpStatus.OK);
+        return new ResponseEntity<>(createdMentorDTO, HttpStatus.CREATED);
     }
 
     @PostMapping("/update/{id}")

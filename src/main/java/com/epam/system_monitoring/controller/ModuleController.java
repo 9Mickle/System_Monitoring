@@ -53,7 +53,7 @@ public class ModuleController {
         }
         ModuleDTO createdModuleDTO = ModuleMapper.INSTANCE.toDTO(moduleService.saveModule(moduleDTO));
 
-        return new ResponseEntity<>(createdModuleDTO, HttpStatus.OK);
+        return new ResponseEntity<>(createdModuleDTO, HttpStatus.CREATED);
     }
 
     @PostMapping("/update/{id}")

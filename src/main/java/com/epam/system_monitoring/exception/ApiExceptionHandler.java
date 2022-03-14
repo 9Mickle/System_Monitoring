@@ -21,7 +21,7 @@ public class ApiExceptionHandler {
 
     @ExceptionHandler
     public ResponseEntity<Object> handleCourseNotFoundException(CourseNotFoundException e) {
-        HttpStatus badRequest = HttpStatus.BAD_REQUEST;
+        HttpStatus badRequest = HttpStatus.NOT_FOUND;
         ApiException apiException = new ApiException(
                 e.getMessage(),
                 badRequest,
@@ -32,7 +32,7 @@ public class ApiExceptionHandler {
 
     @ExceptionHandler
     public ResponseEntity<Object> handleModuleNotFoundException(ModuleNotFoundException e) {
-        HttpStatus badRequest = HttpStatus.BAD_REQUEST;
+        HttpStatus badRequest = HttpStatus.NOT_FOUND;
         ApiException apiException = new ApiException(
                 e.getMessage(),
                 badRequest,
@@ -43,7 +43,7 @@ public class ApiExceptionHandler {
 
     @ExceptionHandler
     public ResponseEntity<Object> handleMentorNotFoundException(MentorNotFoundException e) {
-        HttpStatus badRequest = HttpStatus.BAD_REQUEST;
+        HttpStatus badRequest = HttpStatus.NOT_FOUND;
         ApiException apiException = new ApiException(
                 e.getMessage(),
                 badRequest,
@@ -54,7 +54,7 @@ public class ApiExceptionHandler {
 
     @ExceptionHandler
     public ResponseEntity<Object> handleStudentNotFoundException(StudentNotFoundException e) {
-        HttpStatus badRequest = HttpStatus.BAD_REQUEST;
+        HttpStatus badRequest = HttpStatus.NOT_FOUND;
         ApiException apiException = new ApiException(
                 e.getMessage(),
                 badRequest,
