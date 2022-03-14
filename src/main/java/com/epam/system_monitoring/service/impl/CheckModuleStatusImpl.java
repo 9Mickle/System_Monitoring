@@ -22,7 +22,6 @@ public class CheckModuleStatusImpl implements CheckModuleStatus {
     @Override
     @Scheduled(initialDelayString = "${initial.delay}", fixedDelayString = "${fixed.delay}")
     public void checkStatus() {
-        System.out.println("Минута пошла!");
         LocalDateTime today = LocalDateTime.now();
 
         moduleService.getAllModule()
