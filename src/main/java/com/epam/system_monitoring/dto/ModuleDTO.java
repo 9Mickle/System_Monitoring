@@ -26,10 +26,9 @@ public class ModuleDTO {
 
     private String description;
 
-    @JsonIgnore
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm")
     private LocalDateTime startDate;
 
-//    @NotNull(message = "The deadline field cannot be empty!")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm")
     private LocalDateTime deadline;
 

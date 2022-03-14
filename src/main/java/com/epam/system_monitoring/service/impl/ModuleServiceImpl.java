@@ -5,6 +5,7 @@ import com.epam.system_monitoring.entity.Course;
 import com.epam.system_monitoring.entity.Mentor;
 import com.epam.system_monitoring.entity.Module;
 import com.epam.system_monitoring.entity.Student;
+import com.epam.system_monitoring.exception.data.DataCannotBeChangedException;
 import com.epam.system_monitoring.exception.found.CourseNotFoundException;
 import com.epam.system_monitoring.exception.found.MentorNotFoundException;
 import com.epam.system_monitoring.exception.found.ModuleNotFoundException;
@@ -74,6 +75,10 @@ public class ModuleServiceImpl implements ModuleService {
     @Override
     @Transactional
     public Module saveModule(ModuleDTO moduleDTO) {
+
+        if (moduleDTO.getStartDate() != null) {
+            throw new DataCannotBeChangedException("Start date cannot be changed!");
+        }
 
         Course course = courseRepository.findById((moduleDTO.getCourseId()))
                 .orElseThrow(() -> new CourseNotFoundException("Course not found with id: " + moduleDTO.getCourseId()));

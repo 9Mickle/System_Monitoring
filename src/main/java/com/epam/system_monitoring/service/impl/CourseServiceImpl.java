@@ -31,7 +31,7 @@ public class CourseServiceImpl implements CourseService {
     /**
      * Получить курс по id.
      *
-     * @param id курса.
+     * @param id идентификатор курса.
      * @return курс.
      */
     @Override
@@ -51,8 +51,6 @@ public class CourseServiceImpl implements CourseService {
         return courseRepository.findByTitle(title)
                 .orElseThrow(() -> new CourseNotFoundException("Course not found with title: " + title));
     }
-
-    //todo подумать...
 
     /**
      * Сохрнаить новый курс.
@@ -74,7 +72,7 @@ public class CourseServiceImpl implements CourseService {
     /**
      * Обновить курс.
      *
-     * @param id        курса.
+     * @param id        идентификатор курса.
      * @param courseDTO курс переданный с клиента.
      * @return обновленный курс.
      */
@@ -94,9 +92,9 @@ public class CourseServiceImpl implements CourseService {
 
     /**
      * Удалить курс.
-     * При удалении курса удалятся также все модули из БД.
+     * При удалении курса удалятся также все дочерние модули из БД.
      *
-     * @param id курса.
+     * @param id идентификатор курса.
      * @return строка.
      */
     @Override

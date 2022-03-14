@@ -58,7 +58,7 @@ public class StudentController {
         }
         StudentDTO createdStudentDTO = StudentMapper.INSTANCE.toDTO(studentService.saveStudent(studentDTO));
 
-        return new ResponseEntity<>(createdStudentDTO, HttpStatus.OK);
+        return new ResponseEntity<>(createdStudentDTO, HttpStatus.CREATED);
     }
 
     @PostMapping("/update/{id}")
