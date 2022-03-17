@@ -57,7 +57,7 @@ class GetRequestTest {
     @BeforeEach
     public void setUp() {
         LocalDateTime startDate = LocalDateTime.now();
-        mentorDTO = new MentorDTO("mentor1", "mentor1", "mentorik1");
+        mentorDTO = new MentorDTO("mentor1", "mentor1", "mentorik1", "email", "123");
         studentDTO = new StudentDTO("student1", "stud1", "studentik1");
         courseDTO = new CourseDTO("Course 1");
         moduleDTO = new ModuleDTO(
@@ -84,10 +84,10 @@ class GetRequestTest {
         mockMvc.perform(get("http://localhost:8080/api/course/"))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.courses").isArray())
-                .andExpect(jsonPath("$.courses", hasSize(2)))
-                .andExpect(jsonPath("$.courses[0].title", is("Course 1")))
-                .andExpect(jsonPath("$.courses[1].title", is("Course 2")));
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(jsonPath("$[0].title", is("Course 1")))
+                .andExpect(jsonPath("$[1].title", is("Course 2")));
     }
 
     @Test

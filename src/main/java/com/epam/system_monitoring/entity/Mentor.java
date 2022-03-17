@@ -21,6 +21,10 @@ public class Mentor {
     private String surname;
     @Column(unique = true)
     private String username;
+    @Column(unique = true, nullable = false)
+    private String email;
+    @Column(name = "phone_number")
+    private String phoneNumber;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "mentor", cascade = CascadeType.PERSIST)
     private List<Student> students;

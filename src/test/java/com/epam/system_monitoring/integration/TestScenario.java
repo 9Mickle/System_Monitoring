@@ -44,7 +44,7 @@ public class TestScenario {
     @Test
     public void testScenario() throws Exception {
         //Создаем ментора и сохраняем в БД.
-        MentorDTO mentorDTO = new MentorDTO("mentor1", "mentor1", "mentorik1");
+        MentorDTO mentorDTO = new MentorDTO("mentor1", "mentor1", "mentorik1", "mentor@mail.ru", "123");
         mockMvc.perform(post("http://localhost:8080/api/mentor/create")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(mentorDTO))
@@ -54,6 +54,8 @@ public class TestScenario {
                 .andExpect(jsonPath("$.name", is(mentorDTO.getName())))
                 .andExpect(jsonPath("$.surname", is(mentorDTO.getSurname())))
                 .andExpect(jsonPath("$.username", is(mentorDTO.getUsername())))
+                .andExpect(jsonPath("$.phoneNumber", is(mentorDTO.getPhoneNumber())))
+                .andExpect(jsonPath("$.email", is(mentorDTO.getEmail())))
                 .andReturn();
 
         //Проверяем, что ментор с id = 1 есть в БД.
@@ -62,7 +64,9 @@ public class TestScenario {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name", is(mentorDTO.getName())))
                 .andExpect(jsonPath("$.surname", is(mentorDTO.getSurname())))
-                .andExpect(jsonPath("$.username", is(mentorDTO.getUsername())));
+                .andExpect(jsonPath("$.username", is(mentorDTO.getUsername())))
+                .andExpect(jsonPath("$.phoneNumber", is(mentorDTO.getPhoneNumber())))
+                .andExpect(jsonPath("$.email", is(mentorDTO.getEmail())));
 
         //Создаем студента и сохраняем в БД.
         StudentDTO studentDTO = new StudentDTO("student1", "stud1", "studentik1");

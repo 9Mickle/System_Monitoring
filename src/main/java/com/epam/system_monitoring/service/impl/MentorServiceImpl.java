@@ -5,6 +5,7 @@ import com.epam.system_monitoring.entity.Mentor;
 import com.epam.system_monitoring.entity.Student;
 import com.epam.system_monitoring.exception.data.DataCannotBeChangedException;
 import com.epam.system_monitoring.exception.data.NotEnoughDataException;
+import com.epam.system_monitoring.exception.exist.EmailAlreadyExistException;
 import com.epam.system_monitoring.exception.exist.UsernameAlreadyExistException;
 import com.epam.system_monitoring.exception.found.MentorNotFoundException;
 import com.epam.system_monitoring.exception.found.ModuleNotFoundException;
@@ -42,6 +43,7 @@ public class MentorServiceImpl implements MentorService {
                 .orElseThrow(() -> new MentorNotFoundException("Mentor not found with id: " + id));
     }
 
+
     /**
      * Сохранить нового ментора.
      *
@@ -50,8 +52,13 @@ public class MentorServiceImpl implements MentorService {
      */
     @Override
     public Mentor saveMentor(MentorDTO mentorDTO) {
+
         if (mentorDTO.getUsername() == null) {
             throw new NotEnoughDataException("Username is missing for saving!");
+        }
+
+        if (mentorRepository.existsByEmail(mentorDTO.getEmail())) {
+            throw new EmailAlreadyExistException("Mentor with email already exist!");
         }
 
         mentorRepository.findByUsername(mentorDTO.getUsername())
@@ -72,6 +79,7 @@ public class MentorServiceImpl implements MentorService {
      */
     @Override
     public Mentor updateMentor(Long id, MentorDTO mentorDTO) {
+
         if (mentorDTO.getUsername() != null) {
             throw new DataCannotBeChangedException("Username cannot be updated!");
         }
@@ -79,8 +87,16 @@ public class MentorServiceImpl implements MentorService {
         Mentor mentor = mentorRepository.findById(id)
                 .orElseThrow(() -> new MentorNotFoundException("Mentor not found with id: " + id));
 
+        //Если в БД находится ментор с таким же Email и у mentorDTO не такой же Email как у mentor, то обновить нельзя.
+        if (mentorRepository.existsByEmail(mentorDTO.getEmail()) &&
+        !mentor.getEmail().equals(mentorDTO.getEmail())) {
+            throw new EmailAlreadyExistException("Mentor with email already exist!");
+        }
+
         mentor.setName(mentorDTO.getName());
         mentor.setSurname(mentorDTO.getSurname());
+        mentor.setEmail(mentorDTO.getEmail());
+        mentor.setPhoneNumber(mentorDTO.getPhoneNumber());
         return mentorRepository.save(mentor);
     }
 
