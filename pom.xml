@@ -26,6 +26,7 @@
         <maven.compiler.plugin.version>3.8.1</maven.compiler.plugin.version>
         <org.mapstruct.version>1.4.2.Final</org.mapstruct.version>
         <postresql.version>42.3.3</postresql.version>
+        <rabbitmq.version>2.4.2</rabbitmq.version>
     </properties>
 
     <dependencies>
@@ -72,6 +73,13 @@
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <version>${postresql.version}</version>
+        </dependency>
+
+        <!--RabbitMQ-->
+        <dependency>
+            <groupId>org.springframework.amqp</groupId>
+            <artifactId>spring-rabbit</artifactId>
+            <version>${rabbitmq.version}</version>
         </dependency>
 
         <!--Spring-->
