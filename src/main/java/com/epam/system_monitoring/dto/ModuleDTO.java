@@ -1,9 +1,7 @@
 package com.epam.system_monitoring.dto;
 
-import com.epam.system_monitoring.annotation.CustomJsonRootName;
 import com.epam.system_monitoring.entity.ModuleStatus;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,7 +13,6 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@CustomJsonRootName(plural = "modules", singular = "module")
 public class ModuleDTO {
 
     @NotNull(message = "The courseId field cannot be empty!")

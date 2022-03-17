@@ -1,6 +1,5 @@
 package com.epam.system_monitoring.controller;
 
-import com.epam.system_monitoring.annotation.CustomJsonRootName;
 import com.epam.system_monitoring.dto.CourseDTO;
 import com.epam.system_monitoring.dto.ModuleDTO;
 import com.epam.system_monitoring.entity.Course;
@@ -16,9 +15,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 //todo swagger
 
@@ -36,9 +33,7 @@ public class CourseController {
     public ResponseEntity<Object> getAllCourses() {
         List<CourseDTO> courseDTOList = CourseMapper.INSTANCE.toDTOList(courseService.getAllCourses());
 
-        Map<Object, Object> result = new HashMap<>();
-        result.put(CourseDTO.class.getAnnotation(CustomJsonRootName.class).plural(), courseDTOList);
-        return new ResponseEntity<>(result, HttpStatus.OK);
+        return new ResponseEntity<>(courseDTOList, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
