@@ -24,9 +24,10 @@
         <lombok.version>1.18.22</lombok.version>
         <lombok-mapstruct-binding.version>0.2.0</lombok-mapstruct-binding.version>
         <maven.compiler.plugin.version>3.8.1</maven.compiler.plugin.version>
-        <org.mapstruct.version>1.4.2.Final</org.mapstruct.version>
+        <mapstruct.version>1.4.2.Final</mapstruct.version>
         <postresql.version>42.3.3</postresql.version>
         <rabbitmq.version>2.4.2</rabbitmq.version>
+        <springdoc.version>1.6.6</springdoc.version>
     </properties>
 
     <dependencies>
@@ -65,7 +66,7 @@
         <dependency>
             <groupId>org.mapstruct</groupId>
             <artifactId>mapstruct</artifactId>
-            <version>${org.mapstruct.version}</version>
+            <version>${mapstruct.version}</version>
         </dependency>
 
         <!--Postgresql-->
@@ -114,6 +115,13 @@
             <artifactId>spring-webmvc</artifactId>
         </dependency>
 
+        <!-- Spring doc-->
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-ui</artifactId>
+            <version>${springdoc.version}</version>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -143,7 +151,7 @@
                         <path>
                             <groupId>org.mapstruct</groupId>
                             <artifactId>mapstruct-processor</artifactId>
-                            <version>${org.mapstruct.version}</version>
+                            <version>${mapstruct.version}</version>
                         </path>
 
                         <path>
