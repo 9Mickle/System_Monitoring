@@ -15,6 +15,7 @@
 * Spring 5.x.x, Spring Data JPA
 * JUnit, Mockito
 * Maven
+* Docker
 * PostgreSQL
 * H2 for tests
 * Liquibase
@@ -24,6 +25,10 @@
 * Spring doc
 
 ### How to run:
+* Clone this repository.
+* Connect to PostgreSQL (db name = system_monitoring).
+* Run application.
+* Clone this repository: https://github.com/9Mickle/microservice_notification and run application.
 * RabbitMQ: docker run -it --rm --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:3.9-management
 
 ### *APIs:*
