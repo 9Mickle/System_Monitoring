@@ -1,4 +1,4 @@
-package com.epam.system_monitoring.configuration;
+package com.epam.microservice_notification.configuration;
 
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
@@ -8,7 +8,6 @@ import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-//docker run -it --rm --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:3.9-management
 @Configuration
 public class RabbitMQConfig {
 
@@ -21,19 +20,16 @@ public class RabbitMQConfig {
         return new Queue(QUEUE);
     }
 
-    //Обменник.
     @Bean
     public TopicExchange exchange() {
         return new TopicExchange(EXCHANGE);
     }
 
-    //Связка обменника и очереди через ключ маршрутизации.
     @Bean
     public Binding binding(Queue queue, TopicExchange exchange) {
         return BindingBuilder.bind(queue).to(exchange).with(ROUTING_KEY);
     }
 
-    //Конвертер сообщений.
     @Bean
     public MessageConverter converter() {
         return new Jackson2JsonMessageConverter();
