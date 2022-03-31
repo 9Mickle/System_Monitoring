@@ -32,3 +32,6 @@ This project is a management system for courses, modules, mentors and students.
 
 ### *APIs:*
 You can view the documentation for all endpoints at this url: http://localhost:8080/swagger-ui/index.html
+
+### Postman
+For clarity, you can use file System_monitoring.postman_collection
