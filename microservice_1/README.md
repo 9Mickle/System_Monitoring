@@ -26,10 +26,10 @@
 
 ### How to run:
 * Clone this repository.
-* Connect to PostgreSQL (db name = system_monitoring).
-* Run application.
-* RabbitMQ: docker run -it --rm --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:3.9-management
-* Clone this repository: https://github.com/9Mickle/microservice_notification and run application.
+* Cd in System_monitoring and run command: mvn clean install -DskipTests=true
+* Cd in microservice_1 and run commands:
+  * docker-compose build
+  * docker-compose up
 
 ### *APIs:*
 You can view the documentation for all endpoints at this url: http://localhost:8080/swagger-ui/index.html
