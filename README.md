@@ -22,11 +22,9 @@ This project is a management system for courses, modules, mentors and students.
 
 ### How to run:
 * Clone this repository.
-* Cd in System_monitoring and run command: mvn clean install -DskipTests=true
-* Cd in microservice_1 and run commands:
-  * docker-compose build
-  * docker-compose up
-* Cd in microservice_notification and run commands:
+* Cd in System_monitoring and 
+* Run commands: 
+  * mvn clean install -DskipTests=true
   * docker-compose build
   * docker-compose up
 

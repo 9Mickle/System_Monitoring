@@ -9,10 +9,3 @@ The interface must contain a single method - notify
 
 In the context of the task, the actual message will not be sent.
 Instead, you need to add an implementation that simply writes a message to the log.
-
-### How to run:
-* Clone this repository.
-* Cd in System_monitoring and run command: mvn clean install -DskipTests=true
-* Cd in microservice_notification and run commands:
-  * docker-compose build
-  * docker-compose up
