@@ -18,7 +18,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.nio.charset.StandardCharsets;
 
 import static org.hamcrest.Matchers.is;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -68,7 +68,7 @@ class PostRequestTest {
         String newTitle = "newTitle";
         CourseDTO courseDTO = new CourseDTO(newTitle);
 
-        mockMvc.perform(post("http://localhost:8080/api/course/update/" + courseId)
+        mockMvc.perform(put("http://localhost:8080/api/course/update/" + courseId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(courseDTO))
                         .characterEncoding(StandardCharsets.UTF_8))
@@ -85,11 +85,11 @@ class PostRequestTest {
     public void shouldThrowTheErrorTitleAlreadyExistWhenUpdateCourse() throws Exception {
         long courseId = 1L;
         String sameTitle = "Course 1";
-        CourseDTO courseDTO = new CourseDTO(sameTitle);
+        CourseDTO updatedCourseDTO = new CourseDTO(sameTitle);
 
-        mockMvc.perform(post("http://localhost:8080/api/course/update/" + courseId)
+        mockMvc.perform(put("http://localhost:8080/api/course/update/" + courseId)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(asJsonString(courseDTO))
+                        .content(asJsonString(updatedCourseDTO))
                         .characterEncoding(StandardCharsets.UTF_8))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
@@ -100,7 +100,7 @@ class PostRequestTest {
     @Test
     public void shouldDeleteCourse() throws Exception {
         long courseId = 1L;
-        mockMvc.perform(post("http://localhost:8080/api/course/delete/" + courseId))
+        mockMvc.perform(delete("http://localhost:8080/api/course/delete/" + courseId))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", is(String.format("Course with id: %d was deleted", courseId))))

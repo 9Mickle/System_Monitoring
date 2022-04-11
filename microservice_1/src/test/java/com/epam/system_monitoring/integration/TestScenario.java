@@ -26,8 +26,7 @@ import java.time.temporal.ChronoUnit;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -164,7 +163,7 @@ public class TestScenario {
                 1L,
                 1L);
 
-        mockMvc.perform(post("http://localhost:8080/api/module/update/1")
+        mockMvc.perform(put("http://localhost:8080/api/module/update/1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(updatedModuleDTO))
                         .characterEncoding(StandardCharsets.UTF_8))
@@ -220,7 +219,7 @@ public class TestScenario {
 
         //Проверяем, что после удаления курса(id=1) удалится и его дочерний модуль(id=1).
         //Удаляем модуль.
-        mockMvc.perform(post("http://localhost:8080/api/course/delete/1"))
+        mockMvc.perform(delete("http://localhost:8080/api/course/delete/1"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", is(String.format("Course with id: %d was deleted", 1))))

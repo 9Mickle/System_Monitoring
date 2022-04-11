@@ -16,9 +16,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
+import org.testcontainers.containers.RabbitMQContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -31,11 +37,17 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+/**
+ * Перед тестом #docker run -it --rm --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:3.9-management
+ */
+//@Testcontainers
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 @AutoConfigureMockMvc
 @TestPropertySource("/application-test.properties")
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)// дроп и создание новой бд после каждого теста.
+// дроп и создание новой бд после каждого теста.
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
+//@ContextConfiguration
 class GetRequestTest {
 
     @Autowired
@@ -54,8 +66,19 @@ class GetRequestTest {
     private static MentorDTO mentorDTO;
     private static StudentDTO studentDTO;
 
+//    @Container
+//    public final static RabbitMQContainer rabbitMQContainer =
+//            new RabbitMQContainer("rabbitmq:3.9-management").withReuse(false);
+//
+//    @DynamicPropertySource
+//    static void configure(DynamicPropertyRegistry registry) {
+//        registry.add("spring.rabbitmq.host", rabbitMQContainer::getContainerIpAddress);
+//        registry.add("spring.rabbitmq.port", rabbitMQContainer::getAmqpPort);
+//    }
+
     @BeforeEach
     public void setUp() {
+//        rabbitMQContainer.start();
         LocalDateTime startDate = LocalDateTime.now();
         mentorDTO = new MentorDTO("mentor1", "mentor1", "mentorik1", "email", "123");
         studentDTO = new StudentDTO("student1", "stud1", "studentik1");

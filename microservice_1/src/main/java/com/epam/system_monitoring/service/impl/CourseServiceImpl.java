@@ -69,6 +69,7 @@ public class CourseServiceImpl implements CourseService {
         return courseRepository.save(course);
     }
 
+    //todo перехватить 500
     /**
      * Обновить курс.
      *

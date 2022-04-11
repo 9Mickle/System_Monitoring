@@ -33,7 +33,6 @@ class CourseServiceImplTest {
 
     @BeforeEach
     public void setUp() {
-        courseService = new CourseServiceImpl(courseRepository);
         course = new Course(1L, "Course 1", null);
     }
 
