@@ -69,13 +69,8 @@ public class ModuleServiceImpl implements ModuleService {
      */
     @Override
     public Module getModuleByTitle(String title) {
-        Optional<Module> optModule = moduleRepository.findByTitle(title);
-
-        if (optModule.isPresent()) {
-            return optModule.get();
-        } else {
-            throw new ModuleNotFoundException("Module not found with title: " + title);
-        }
+        return moduleRepository.findByTitle(title)
+                .orElseThrow(() -> new ModuleNotFoundException("Module not found with title: " + title));
     }
 
     @Override
