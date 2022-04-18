@@ -76,8 +76,8 @@ public class ModuleController {
             @ApiResponse(responseCode = "404",
                     description = "Module not found", content = @Content)
     })
-    @GetMapping("/title/{title}")
-    public ResponseEntity<Object> getModuleByTitle(@PathVariable String title) {
+    @GetMapping("/title")
+    public ResponseEntity<Object> getModuleByTitle(@RequestParam("title") String title) {
         ModuleDTO moduleDTO = ModuleMapper.INSTANCE.toDTO(moduleService.getModuleByTitle(title));
 
         return new ResponseEntity<>(moduleDTO, HttpStatus.OK);
@@ -98,7 +98,7 @@ public class ModuleController {
             @ApiResponse(responseCode = "404",
                     description = "Course or mentor or student not found", content = @Content)
     })
-    @PostMapping("/create")
+    @PostMapping("/")
     public ResponseEntity<Object> createModule(@RequestBody @Valid ModuleDTO moduleDTO,
                                                BindingResult bindingResult) {
 
@@ -122,7 +122,7 @@ public class ModuleController {
             @ApiResponse(responseCode = "404",
                     description = "Module or student or mentor not found", content = @Content)
     })
-    @PutMapping("/update/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<Object> updateModule(@PathVariable Long id,
                                                @RequestBody @Valid ModuleDTO moduleDTO,
                                                BindingResult bindingResult) {
@@ -147,7 +147,7 @@ public class ModuleController {
             @ApiResponse(responseCode = "404",
                     description = "Module not found", content = @Content)
     })
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Object> deleteModule(@PathVariable Long id) {
         return new ResponseEntity<>(moduleService.deleteModule(id), HttpStatus.OK);
     }

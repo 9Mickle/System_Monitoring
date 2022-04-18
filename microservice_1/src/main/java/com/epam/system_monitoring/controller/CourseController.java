@@ -50,6 +50,7 @@ public class CourseController {
         return new ResponseEntity<>(courseDTOList, HttpStatus.OK);
     }
 
+
     @Operation(summary = "Get a course by its id from Db")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
@@ -67,6 +68,7 @@ public class CourseController {
         return new ResponseEntity<>(courseDTO, HttpStatus.OK);
     }
 
+
     @Operation(summary = "Get a course by its title from Db")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
@@ -77,13 +79,14 @@ public class CourseController {
             @ApiResponse(responseCode = "404",
                     description = "Course not found", content = @Content)
     })
-    @GetMapping("/title/{title}")
-    public ResponseEntity<Object> getCourseByTitle(@PathVariable String title) {
+    @GetMapping("/title")
+    public ResponseEntity<Object> getCourseByTitle(@RequestParam("title") String title) {
         Course course = courseService.getCourseByTitle(title);
         CourseDTO courseDTO = CourseMapper.INSTANCE.toDTO(course);
 
         return new ResponseEntity<>(courseDTO, HttpStatus.OK);
     }
+
 
     @Operation(summary = "Get all the modules that were created in the course from Db")
     @ApiResponses(value = {
@@ -113,7 +116,7 @@ public class CourseController {
                             mediaType = MediaType.APPLICATION_JSON_VALUE,
                             schema = @Schema(implementation = CourseDTO.class))})
     })
-    @PostMapping("/create")
+    @PostMapping("/")
     public ResponseEntity<Object> createCourse(@RequestBody @Valid CourseDTO courseDTO,
                                                BindingResult bindingResult) {
 
@@ -125,6 +128,7 @@ public class CourseController {
 
         return new ResponseEntity<>(createdCourseDTO, HttpStatus.CREATED);
     }
+
 
     @Operation(summary = "Update course and save it to the Db")
     @ApiResponses(value = {
@@ -143,7 +147,7 @@ public class CourseController {
                     )
             })
     })
-    @PutMapping("/update/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<Object> updateCourse(@PathVariable Long id,
                                                @RequestBody @Valid CourseDTO courseDTO,
                                                BindingResult bindingResult) {
@@ -158,6 +162,7 @@ public class CourseController {
         return new ResponseEntity<>(updatedCourseDTO, HttpStatus.OK);
     }
 
+
     @Operation(summary = "Delete course from Db")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
@@ -168,7 +173,7 @@ public class CourseController {
             @ApiResponse(responseCode = "404",
                     description = "Course not found", content = @Content)
     })
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Object> deleteCourse(@PathVariable Long id) {
 
         return new ResponseEntity<>(courseService.deleteCourse(id), HttpStatus.OK);

@@ -122,7 +122,7 @@ public class MentorController {
                     description = "Сan not create mentors with the same username or email",
                     content = @Content)
     })
-    @PostMapping("/create")
+    @PostMapping("/")
     public ResponseEntity<Object> createMentor(@RequestBody @Valid MentorDTO mentorDTO, BindingResult bindingResult) {
 
         ResponseEntity<Object> errors = validation.mapValidationService(bindingResult);
@@ -148,7 +148,7 @@ public class MentorController {
                     description = "A mentor with that username or email already exists. " +
                             "It is also not possible to update the mentor's username", content = @Content)
     })
-    @PutMapping("/update/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<Object> updateMentor(@PathVariable Long id,
                                                @RequestBody @Valid MentorDTO mentorDTO,
                                                BindingResult bindingResult) {
@@ -173,7 +173,7 @@ public class MentorController {
             @ApiResponse(responseCode = "404",
                     description = "Mentor not found", content = @Content)
     })
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Object> deleteMentor(@PathVariable Long id) {
         return new ResponseEntity<>(mentorService.deleteMentor(id), HttpStatus.OK);
     }

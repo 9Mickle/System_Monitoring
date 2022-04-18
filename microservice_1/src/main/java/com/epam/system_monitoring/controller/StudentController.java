@@ -100,7 +100,7 @@ public class StudentController {
                     description = "Сan not create students with the same username",
                     content = @Content)
     })
-    @PostMapping("/create")
+    @PostMapping("/")
     public ResponseEntity<Object> createStudent(@RequestBody @Valid StudentDTO studentDTO, BindingResult bindingResult) {
 
         ResponseEntity<Object> errors = validation.mapValidationService(bindingResult);
@@ -126,7 +126,7 @@ public class StudentController {
                     description = "A student with that username already exists. " +
                             "It is also not possible to update the student's username", content = @Content)
     })
-    @PutMapping("/update/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<Object> updateStudent(@PathVariable Long id,
                                                 @RequestBody @Valid StudentDTO studentDTO,
                                                 BindingResult bindingResult) {
@@ -151,7 +151,7 @@ public class StudentController {
             @ApiResponse(responseCode = "404",
                     description = "Student not found", content = @Content)
     })
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Object> deleteStudent(@PathVariable Long id) {
         return new ResponseEntity<>(studentService.deleteStudent(id), HttpStatus.OK);
     }
