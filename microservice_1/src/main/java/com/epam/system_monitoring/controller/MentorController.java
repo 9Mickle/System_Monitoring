@@ -189,7 +189,7 @@ public class MentorController {
             @ApiResponse(responseCode = "404",
                     description = "Mentor or student not found", content = @Content)
     })
-    @PostMapping("/add/{mentorId}/{studentId}")
+    @PostMapping("/{mentorId}/{studentId}")
     public ResponseEntity<Object> addStudentToMentor(@PathVariable Long mentorId, @PathVariable Long studentId) {
         MentorDTO mentorDTO = MentorMapper.INSTANCE.toDTO(mentorService.addStudent(mentorId, studentId));
 
