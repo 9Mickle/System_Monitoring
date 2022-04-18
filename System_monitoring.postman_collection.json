@@ -15,7 +15,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"title\":\"Course 1\"\r\n}",
+							"raw": "{\r\n    \"title\":\"Course1\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -23,7 +23,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/api/course/create",
+							"raw": "http://localhost:8080/api/course/",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -32,7 +32,7 @@
 							"path": [
 								"api",
 								"course",
-								"create"
+								""
 							]
 						}
 					},
@@ -65,7 +65,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/api/course/title/:title",
+							"raw": "http://localhost:8080/api/course/title/?title=Course1",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -75,12 +75,12 @@
 								"api",
 								"course",
 								"title",
-								":title"
+								""
 							],
-							"variable": [
+							"query": [
 								{
 									"key": "title",
-									"value": "Course 1"
+									"value": "Course1"
 								}
 							]
 						}
@@ -120,7 +120,7 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/api/course/delete/:id",
+							"raw": "http://localhost:8080/api/course/:id",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -129,7 +129,6 @@
 							"path": [
 								"api",
 								"course",
-								"delete",
 								":id"
 							],
 							"variable": [
@@ -149,7 +148,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"title\":\"Course 2\"\r\n}",
+							"raw": "{\r\n    \"title\":\"Course 1\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -157,7 +156,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/api/course/update/:id",
+							"raw": "http://localhost:8080/api/course/:id",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -166,13 +165,12 @@
 							"path": [
 								"api",
 								"course",
-								"update",
 								":id"
 							],
 							"variable": [
 								{
 									"key": "id",
-									"value": "2"
+									"value": "1"
 								}
 							]
 						}
@@ -232,7 +230,7 @@
 							"variable": [
 								{
 									"key": "id",
-									"value": "2"
+									"value": "1"
 								}
 							]
 						}
@@ -246,7 +244,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"courseId\":\"1\",\r\n    \"title\":\"Module 1\",\r\n    \"moduleStatus\":\"INPROGRESS\",\r\n    \"assigneeId\":1,\r\n    \"reporterId\":1,\r\n    \"deadline\":\"17-03-2022 22:57\"\r\n}",
+							"raw": "{\r\n    \"courseId\":\"1\",\r\n    \"title\":\"Module 1\",\r\n    \"moduleStatus\":\"INPROGRESS\",\r\n    \"assigneeId\":1,\r\n    \"reporterId\":1,\r\n    \"deadline\":\"11-04-2022 17:27\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -254,7 +252,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/api/module/update/:id",
+							"raw": "http://localhost:8080/api/module/:id",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -263,7 +261,6 @@
 							"path": [
 								"api",
 								"module",
-								"update",
 								":id"
 							],
 							"variable": [
@@ -282,7 +279,7 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/api/module/delete/:id",
+							"raw": "http://localhost:8080/api/module/:id",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -291,7 +288,6 @@
 							"path": [
 								"api",
 								"module",
-								"delete",
 								":id"
 							],
 							"variable": [
@@ -311,7 +307,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"title\":\"Module 1\",\r\n    \"moduleStatus\":\"TODO\",\r\n    \"courseId\":1,\r\n    \"reporterId\":1\r\n}",
+							"raw": "{\r\n    \"title\":\"Module 2\",\r\n    \"moduleStatus\":\"TODO\",\r\n    \"courseId\":1,\r\n    \"reporterId\":1,\r\n    \"assigneeId\":1\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -319,7 +315,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/api/module/create",
+							"raw": "http://localhost:8080/api/module/",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -328,7 +324,7 @@
 							"path": [
 								"api",
 								"module",
-								"create"
+								""
 							]
 						}
 					},
@@ -375,7 +371,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/api/student/create",
+							"raw": "http://localhost:8080/api/student/",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -384,7 +380,7 @@
 							"path": [
 								"api",
 								"student",
-								"create"
+								""
 							]
 						}
 					},
@@ -452,7 +448,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"name\":\"student1\",\r\n    \"surname\":\"stud1\"\r\n}",
+							"raw": "{\r\n    \"name\":\"student 1\",\r\n    \"surname\":\"stud1\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -460,7 +456,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/api/student/update/:id",
+							"raw": "http://localhost:8080/api/student/:id",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -469,7 +465,6 @@
 							"path": [
 								"api",
 								"student",
-								"update",
 								":id"
 							],
 							"variable": [
@@ -488,7 +483,7 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/api/student/delete/:id",
+							"raw": "http://localhost:8080/api/student/:id",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -497,7 +492,6 @@
 							"path": [
 								"api",
 								"student",
-								"delete",
 								":id"
 							],
 							"variable": [
@@ -551,7 +545,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/api/mentor/create",
+							"raw": "http://localhost:8080/api/mentor/",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -560,7 +554,7 @@
 							"path": [
 								"api",
 								"mentor",
-								"create"
+								""
 							]
 						}
 					},
@@ -572,7 +566,7 @@
 						"method": "POST",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/api/mentor/add/:mentor_id/:student_id",
+							"raw": "http://localhost:8080/api/mentor/:mentor_id/:student_id",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -581,7 +575,6 @@
 							"path": [
 								"api",
 								"mentor",
-								"add",
 								":mentor_id",
 								":student_id"
 							],
@@ -661,7 +654,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"name\":\"mentor1\",\r\n    \"surname\":\"men1\",\r\n    \"email\":\"mentor@mail.ru\",\r\n    \"phoneNumber\":\"+7-918-111-22-33\"\r\n}",
+							"raw": "{\r\n    \"name\":\"mentor1\",\r\n    \"surname\":\"men1\",\r\n    \"email\":\"mentor@gmail.ru\",\r\n    \"phoneNumber\":\"+7-918-111-22-33\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -669,7 +662,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/api/mentor/update/:id",
+							"raw": "http://localhost:8080/api/mentor/:id",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -678,7 +671,6 @@
 							"path": [
 								"api",
 								"mentor",
-								"update",
 								":id"
 							],
 							"variable": [
@@ -697,7 +689,7 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/api/mentor/delete/:id",
+							"raw": "http://localhost:8080/api/mentor/:id",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -706,7 +698,6 @@
 							"path": [
 								"api",
 								"mentor",
-								"delete",
 								":id"
 							],
 							"variable": [
